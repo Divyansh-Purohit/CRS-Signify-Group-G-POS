@@ -2,12 +2,13 @@
  * 
  */
 package com.signify.service;
-
+import java.util.*;
 /**
  * @author dp201
  *
  */
-public class ProfessorService extends UserService{
+public class ProfessorServiceOperation extends UserServiceOperation implements ProfessorInterface{
+	
 
 	public void viewEnrolledStudents()
 	{

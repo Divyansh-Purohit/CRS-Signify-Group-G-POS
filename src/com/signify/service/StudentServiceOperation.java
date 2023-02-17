@@ -7,7 +7,7 @@ package com.signify.service;
  * @author dp201
  *
  */
-public class StudentService extends UserService{
+public class StudentServiceOperation extends UserServiceOperation implements StudentInterface{
 	public void viewGrades()
 	{
 		System.out.println("Grades Viewed!");

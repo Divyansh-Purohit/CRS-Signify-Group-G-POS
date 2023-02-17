@@ -7,7 +7,7 @@ package com.signify.service;
  * @author dp201
  *
  */
-public class AdminService {
+public class AdminServiceOperation extends UserServiceOperation implements AdminInterface{
 
 	public void approveStudent(int studentId)
 	{
@@ -42,5 +42,10 @@ public class AdminService {
 	public void viewCourseDetails(int courseId)
 	{
 		System.out.println("Course Details Viewed!");
+	}
+	
+	public double calculateCpi(int studentId)
+	{
+		return 0.0;
 	}
 }
