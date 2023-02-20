@@ -8,20 +8,18 @@ package com.signify.service;
  *
  */
 public interface StudentInterface {
-	public void viewGrades();
+	public void viewGrades(int studentId);
 	
-	public void viewGrade(int courseId);
+	public void viewGrade(int studentId, String courseId);
 	
 	public void register();
+		
+	public void viewRegisterCourses(int studentId);
 	
-	public void changePassword();
+	public void addCourse(int studentId);
 	
-	public void viewRegisterCourses();
+	public void dropCourse(int studentId, String courseId);
 	
-	public void addCourse();
-	
-	public void dropCourse(int courseId);
-	
-	public void payFees();
+	public void payFees(int studentId);
 	
 }

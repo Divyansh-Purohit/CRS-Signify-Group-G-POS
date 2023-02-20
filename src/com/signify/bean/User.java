@@ -1,9 +1,15 @@
 package com.signify.bean;
 public abstract class User {
 	private int userId;
-	private String name, address;
+	private String name, address, password;
 	public int getUserId() {
 		return userId;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public void setUserId(int userId) {
 		this.userId = userId;

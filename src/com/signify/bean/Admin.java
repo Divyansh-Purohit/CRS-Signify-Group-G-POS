@@ -1,13 +1,13 @@
 package com.signify.bean;
-import java.util.*;
+import java.time.LocalDate;
 public class Admin extends User {
-	private Date doj;
+	private LocalDate doj;
 
-	public Date getDoj() {
+	public LocalDate getDoj() {
 		return doj;
 	}
 
-	public void setDoj(Date doj) {
+	public void setDoj(LocalDate doj) {
 		this.doj = doj;
 	}
 	

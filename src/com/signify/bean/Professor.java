@@ -2,6 +2,15 @@ package com.signify.bean;
 public class Professor extends User{
 	
 	String department, designation;
+	String courseTaught;
+	
+	public String getCourseTaught() {
+		return courseTaught;
+	}
+
+	public void setCourseTaught(String courseTaught) {
+		this.courseTaught = courseTaught;
+	}
 
 	public String getDepartment() {
 		return department;

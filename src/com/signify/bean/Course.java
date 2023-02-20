@@ -1,7 +1,32 @@
 package com.signify.bean;
+import java.util.*;
 public class Course {
-	private String courseCode, name, instructor;
+	private String courseCode, name;
+	private int instructor;
 	private boolean isOffered;
+	private int seatsAvailable;
+	
+	public int getSeatsAvailable() {
+		return seatsAvailable;
+	}
+	public void setSeatsAvailable(int seatsAvailable) {
+		this.seatsAvailable = seatsAvailable;
+	}
+	private HashMap<Integer, String> enrolledStudents = new HashMap<Integer, String>();
+	
+	public int getNumStudents() {
+		return numStudents;
+	}
+	public HashMap<Integer, String> getEnrolledStudents() {
+		return enrolledStudents;
+	}
+	public void setEnrolledStudents(HashMap<Integer, String> eS) {
+		this.enrolledStudents = eS;
+	}
+	public void setNumStudents(int numStudents) {
+		this.numStudents = numStudents;
+	}
+	private int numStudents;
 	public String getCourseCode() {
 		return courseCode;
 	}
@@ -14,11 +39,11 @@ public class Course {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getInstructor() {
+	public int getInstructor() {
 		return instructor;
 	}
-	public void setInstructor(String instructor) {
-		this.instructor = instructor;
+	public void setInstructor(int instructorId) {
+		this.instructor = instructorId;
 	}
 	public boolean isOffered() {
 		return isOffered;
