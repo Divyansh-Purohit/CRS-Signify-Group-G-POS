@@ -1,27 +1,27 @@
 package com.signify.service;
 
 public interface AdminInterface {
-	public void approveStudent(int adminId);
+	public void approveStudent();
 
-	public void addProfessor(int adminId);
+	public double calculateCpi(int studentId);
 		
-	public void generateReportCard(int adminId, int studentId);
+	public void generateReportCard(int studentId);
 //	public void generateReportCard(int adminId, int studentId, String courseCode, int semester);
-	
-	public void addAdmin(int adminId);
-	
-	public void assignProfessorToCourse(int adminId, int professorId, String courseCode);
-	
-	public void addCourse(int adminId);
 		
-	public void removeCourse(int adminId, String courseCode);
+	public void addCourse();
+		
+	public void removeCourse(String courseCode);
 	
-	public void viewCourseDetails(int adminId, String courseCode);
+	public void viewCourseDetails(String courseCode);
 	
-	public double calculateCpi(int adminId, int studentId);
+	public void addProfessor();
 	
-	public void viewProfessors(int adminId);
+	public void assignProfessorToCourse(int professorId, String courseCode);
 	
-	public void viewAdmins(int adminId);
+	public void viewProfessors();
+	
+	public void addAdmin();
+	
+	public void viewAdmins();
 	
 }

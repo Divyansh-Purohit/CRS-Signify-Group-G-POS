@@ -1,5 +1,6 @@
 package com.signify.service;
 import com.signify.collection.UserData;
+import com.signify.jdbc.StudentDAOImplementation;
 import com.signify.bean.*;
 import helper.*;
 import java.time.LocalDate;
@@ -22,26 +23,30 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 		int semester = sc.nextInt();
 		LocalDate doj = LocalDate.now();
 		
-		Student newStudent = new Student();
-		newStudent.setName(username);
-		newStudent.setAddress(address);
-		newStudent.setPassword(password);
-		newStudent.setSemester(semester);
-		newStudent.setDateOfRegistration(doj);
-		newStudent.setStudentId(Ids.studentId++);
-		newStudent.setUserId(Ids.userId++);
-		newStudent.setApproved(false);
-		newStudent.setNumRegCourses(0);
-						
-		try
-		{
-			UserData.students.put(newStudent.getStudentId(), newStudent);
-		}
-		catch(Exception e)
-		{
-			System.out.println("\nFailed to Register, please try again!");
-		}
-	    System.out.println("\nStudent Registration Successful! Waiting for approval from admin.");
+		
+		StudentDAOImplementation sdi = new StudentDAOImplementation();
+		sdi.register(username, password, address);
+		
+//		Student newStudent = new Student();
+//		newStudent.setName(username);
+//		newStudent.setAddress(address);
+//		newStudent.setPassword(password);
+//		newStudent.setSemester(semester);
+//		newStudent.setDateOfRegistration(doj);
+//		newStudent.setStudentId(Ids.studentId++);
+//		newStudent.setUserId(Ids.userId++);
+//		newStudent.setApproved(false);
+//		newStudent.setNumRegCourses(0);
+//						
+//		try
+//		{
+//			UserData.students.put(newStudent.getStudentId(), newStudent);
+//		}
+//		catch(Exception e)
+//		{
+//			System.out.println("\nFailed to Register, please try again!");
+//		}
+//	    System.out.println("\nStudent Registration Successful! Waiting for approval from admin.");
 	}
 	
 	public void viewGrades(int studentId)

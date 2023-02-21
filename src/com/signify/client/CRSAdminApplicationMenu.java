@@ -5,6 +5,7 @@ package com.signify.client;
 import java.util.*;
 
 import com.signify.collection.UserData;
+import com.signify.jdbc.AdminDAOImplementation;
 import com.signify.service.AdminInterface;
 import com.signify.service.AdminServiceOperation;
 /**
@@ -29,17 +30,17 @@ public class CRSAdminApplicationMenu {
 			{
 				case 1:
 				{
-					as.approveStudent(adminId);
+					as.approveStudent();
 					break;
 				}
 				case 2:
 				{
-					as.addProfessor(adminId);
+					as.addProfessor();
 					break;
 				}
 				case 3:
 				{
-					as.addAdmin(adminId);
+					as.addAdmin();
 					break;
 				}
 				case 4:
@@ -51,7 +52,7 @@ public class CRSAdminApplicationMenu {
 //					System.out.print("Enter Semester: ");
 //					int sem = sc.nextInt();
 //					as.generateReportCard(adminId, sId, courseCode, sem);
-					as.generateReportCard(adminId, sId);
+					as.generateReportCard(sId);
 					break;
 				}
 				case 5:
@@ -61,12 +62,12 @@ public class CRSAdminApplicationMenu {
 					System.out.print("Enter Course Code: ");
 					sc.nextLine();
 					String courseCode = sc.nextLine();
-					as.assignProfessorToCourse(adminId, pId, courseCode);
+					as.assignProfessorToCourse(pId, courseCode);
 					break;
 				}
 				case 6:
 				{
-					as.addCourse(adminId);
+					as.addCourse();
 					break;
 				}
 				case 7:
@@ -74,7 +75,7 @@ public class CRSAdminApplicationMenu {
 					System.out.print("Enter Course Code: ");
 					sc.nextLine();
 					String courseCode = sc.nextLine();
-					as.removeCourse(adminId, courseCode);
+					as.removeCourse(courseCode);
 					break;
 				}
 				case 8:
@@ -82,7 +83,7 @@ public class CRSAdminApplicationMenu {
 					System.out.print("Enter Course Code: ");
 					sc.nextLine();
 					String courseCode = sc.nextLine();
-					as.viewCourseDetails(adminId, courseCode);
+					as.viewCourseDetails(courseCode);
 					break;
 				}
 				case 9:
@@ -94,18 +95,18 @@ public class CRSAdminApplicationMenu {
 						System.out.println("\nNo student found with that id!\n");
 						break;
 					}
-					double cpi = as.calculateCpi(adminId, sId);
+					double cpi = as.calculateCpi(sId);
 					System.out.println("\nThe CPI for current semester is: "+cpi+"\n");
 					break;
 				}
 				case 10:
 				{
-					as.viewProfessors(adminId);
+					as.viewProfessors();
 					break;
 				}
 				case 11:
 				{
-					as.viewAdmins(adminId);
+					as.viewAdmins();
 					break;
 				}		
 				case 12:
