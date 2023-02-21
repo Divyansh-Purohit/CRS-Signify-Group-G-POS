@@ -26,7 +26,6 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 			String sql = "select * from student_course inner join professor on student_course.course_code = professor.coursetaught where professor_id = "
 					+ professorId;
 			stmt = conn.prepareStatement(sql);
-//			stmt.setInt(1, professorId);
 			ResultSet rs = stmt.executeQuery(sql);
 			Student st = new Student();
 			while (rs.next()) {

@@ -19,7 +19,7 @@ import java.util.Scanner;
  */
 public class AdminDAOImplementation {
 	
-	public void addAdmin(String username, String password, String address) {
+	public void addAdmin(String username, String password, String address, String doj) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_id = null;
@@ -29,32 +29,28 @@ public class AdminDAOImplementation {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "insert into user (username, password, address, role, doj) values(?,?,?,?,?)";
-			String sql_id = "select user_id from user where username=" + "\"" + username + "\"" + " and password="
-					+ "\"" + password + "\"";
-			String sql_admin = "insert into admin values(?,?)";
+			
+			String sql = "insert into user (username, password, address, doj, roleid) values(?,?,?,?,?)";
+						
 			stmt = conn.prepareStatement(sql);
-			stmt_id = conn.prepareStatement(sql_id);
-			stmt_admin = conn.prepareStatement(sql_admin);
-
-			String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
 			stmt.setString(1, username);
 			stmt.setString(2, password);
 			stmt.setString(3, address);
-			stmt.setString(4, "admin");
-			stmt.setDate(5, Date.valueOf(doj));
+			stmt.setDate(4, Date.valueOf(doj));
+			stmt.setInt(5, 2);
 			stmt.executeUpdate();
 			stmt.close();
-
+			
+			String sql_id = "select userid from user where username=" + "\"" + username + "\"" + " and password=" + "\"" + password + "\"";
+			stmt_id = conn.prepareStatement(sql_id);
 			ResultSet rs = stmt_id.executeQuery(sql_id);
-
 			while (rs.next()) {
-				id = rs.getInt("user_id");
+				id = rs.getInt("userid");
 			}
-
 			stmt_id.close();
 
+			String sql_admin = "insert into admin values(?,?)";
+			stmt_admin = conn.prepareStatement(sql_admin);
 			stmt_admin.setInt(1, id);
 			stmt_admin.setString(2, username);
 			stmt_admin.executeUpdate();
@@ -80,7 +76,7 @@ public class AdminDAOImplementation {
 		}
 	}
 
-	public void addProfessor(String username, String password, String address, String designation, String department) {
+	public void addProfessor(String username, String password, String address, String designation, String department, String doj) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_id = null;
@@ -90,37 +86,32 @@ public class AdminDAOImplementation {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "insert into user (username, password, address, role, doj) values(?,?,?,?,?)";
-			String sql_id = "select user_id from user where username=" + "\"" + username + "\"" + " and password="
-					+ "\"" + password + "\"";
-			String sql_professor = "insert into professor values(?,?,?,?,?)";
-			stmt = conn.prepareStatement(sql);
-			stmt_id = conn.prepareStatement(sql_id);
-			stmt_professor = conn.prepareStatement(sql_professor);
-
-			String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
+			
+			String sql = "insert into user (username, password, address, doj, roleid) values(?,?,?,?,?)";
+			stmt = conn.prepareStatement(sql);		
 			stmt.setString(1, username);
 			stmt.setString(2, password);
 			stmt.setString(3, address);
-			stmt.setString(4, "professor");
-			stmt.setDate(5, Date.valueOf(doj));
+			stmt.setDate(4, Date.valueOf(doj));
+			stmt.setInt(5, 3);
 			stmt.executeUpdate();
 			stmt.close();
 
+			String sql_id = "select userid from user where username=" + "\"" + username + "\"" + " and password="+"\"" + password + "\"";
+			stmt_id = conn.prepareStatement(sql_id);
 			ResultSet rs = stmt_id.executeQuery(sql_id);
-
 			while (rs.next()) {
-//			    	System.out.println("Hi");
-				id = rs.getInt("user_id");
+				id = rs.getInt("userid");
 			}
-//			    System.out.println(id);
 			stmt_id.close();
-
+			
+	
+			String sql_professor = "insert into professor values(?,?,?,?,?)";
+			stmt_professor = conn.prepareStatement(sql_professor);
 			stmt_professor.setInt(1, id);
 			stmt_professor.setString(2, username);
-			stmt_professor.setString(3, designation);
-			stmt_professor.setString(4, department);
+			stmt_professor.setString(3, department);
+			stmt_professor.setString(4, designation);
 			stmt_professor.setString(5, null);
 			stmt_professor.executeUpdate();
 			stmt_professor.close();
@@ -145,22 +136,31 @@ public class AdminDAOImplementation {
 		}
 	}
 
-	public void addCourse(String courseCode, String courseName, int instructor) {
+	public void addCourse(String courseCode, String courseName, int instructor, int coursefee) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		PreparedStatement stmt_professor = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "insert into catalog (coursecode, coursename, numstudents, instructor) values(?,?,?,?)";
+			
+			String sql = "insert into catalog (coursecode, coursename, numstudents, instructor, coursefee) values(?,?,?,?,?)";
 			stmt = conn.prepareStatement(sql);
-
 			stmt.setString(1, courseCode);
 			stmt.setString(2, courseName);
 			stmt.setInt(3, 0);
 			stmt.setInt(4, instructor);
+			stmt.setInt(5, coursefee);
 			stmt.executeUpdate();
 			stmt.close();
-
+			
+			String sql_professor = "update professor set course = ? where professorid = ?";
+			stmt_professor = conn.prepareStatement(sql_professor);
+			stmt_professor.setString(1, courseCode);
+			stmt_professor.setInt(2, instructor);
+			stmt_professor.executeUpdate();
+			stmt_professor.close();
+			
 			conn.close();
 		} catch (SQLException se) {
 			se.printStackTrace();
@@ -217,15 +217,15 @@ public class AdminDAOImplementation {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "update professor set coursetaught=? where professor_id=" + professor_id;
-			String sql_course = "update catalog set instructor=? where coursecode=" + "\"" + courseCode + "\"";
+			
+			String sql = "update professor set course=? where professor_id=" + professor_id;
 			stmt = conn.prepareStatement(sql);
-			stmt_course = conn.prepareStatement(sql_course);
-
 			stmt.setString(1, courseCode);
 			stmt.executeUpdate();
 			stmt.close();
-
+			
+			String sql_course = "update catalog set instructor=? where coursecode=" + "\"" + courseCode + "\"";
+			stmt_course = conn.prepareStatement(sql_course);
 			stmt_course.setInt(1, professor_id);
 			stmt_course.close();
 
@@ -255,22 +255,69 @@ public class AdminDAOImplementation {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			
+			String sql = "select * from catalog where coursecode = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, courseCode);
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			System.out.println("Course Code  Course Name  Students Enrolled  Instructor Code  Course Fees");
+			System.out.println("=========================================================================");		
+			while (rs.next()) {
+				String cc = rs.getString("coursecode");
+				String cn = rs.getString("coursename");
+				int ns = rs.getInt("numstudents");
+				int ic = rs.getInt("instructor");
+				int cf = rs.getInt("coursefee");
+
+				System.out.println(cc+"\t"+cn+"\t"+ns+"\t"+ic+"\t"+cf);
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException se2) {
+			}
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
+		}
+		System.out.println();
+	}
+	
+	public void viewCourses()
+	{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			
 			String sql = "select * from catalog";
 			stmt = conn.prepareStatement(sql);
-
+			
 			ResultSet rs = stmt.executeQuery(sql);
-
+			
+			System.out.println("Course_Code  Course_Name  Students_Enrolled  Instructor_Code  Course_Fees");
+			System.out.println("=========================================================================");		
 			while (rs.next()) {
-
 				String cc = rs.getString("coursecode");
-				String coursename = rs.getString("coursename");
-				int numstudents = rs.getInt("numstudents");
-				int instructor = rs.getInt("instructor");
+				String cn = rs.getString("coursename");
+				int ns = rs.getInt("numstudents");
+				int ic = rs.getInt("instructor");
+				int cf = rs.getInt("coursefee");
 
-				System.out.println("Course Code: " + cc);
-				System.out.println("Course Name: " + coursename);
-				System.out.println("Number of Students Enrolled: " + numstudents);
-				System.out.println("Instructor Id: " + instructor);
+				System.out.println(cc+"\t"+cn+"\t"+ns+"\t"+ic+"\t"+cf);
 			}
 			rs.close();
 			stmt.close();

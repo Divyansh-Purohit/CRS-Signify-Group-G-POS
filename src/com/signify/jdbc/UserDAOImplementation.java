@@ -14,25 +14,25 @@ import java.util.Scanner;
  *
  */
 public class UserDAOImplementation implements UserDAOInterface{
-	public String[] login(String username, String password)
+	public int[] login(String username, String password)
 	{
 		int user_id = -1;
-		String role = null;
+		int role = -1;
 		Connection conn = null;
 		PreparedStatement stmt = null;
 				
 		try{
 			   
 			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
-			   String sql="select user_id, role from user where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
+			   String sql="select userid, roleid from user where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
 			   stmt = conn.prepareStatement(sql);			   
 			   
 			   ResultSet rs = stmt.executeQuery(sql);
 			   
 			   while(rs.next())
 			   {
-			      user_id = rs.getInt("user_id");
-			      role = rs.getString("role");
+			      user_id = rs.getInt("userid");
+			      role = rs.getInt("roleid");
 			   }
 			   
 			   rs.close();
@@ -56,7 +56,7 @@ public class UserDAOImplementation implements UserDAOInterface{
 			       se.printStackTrace();
 			    }
 		}
-		String[] ans = {role, Integer.toString(user_id)};
+		int[] ans = {role, user_id};
 		return ans;
 	}
 	

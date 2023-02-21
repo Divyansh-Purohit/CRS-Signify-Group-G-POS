@@ -5,6 +5,7 @@ import com.signify.jdbc.AdminDAOImplementation;
 
 import helper.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 /**
  * @author dp201
@@ -17,7 +18,6 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 	
 	public void approveStudent()
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.approveStudent();
 	}
 	
@@ -28,24 +28,22 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		String name = userDetails[0];
 		String address = userDetails[1];
 		String password = userDetails[2];
+		String doj = userDetails[3];
 		System.out.print("Enter Designation: ");
 		String designation = sc.nextLine();
 		System.out.print("Enter Department: ");
 		String department = sc.nextLine();
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
-		adi.addProfessor(name, password, address, designation, department);
+		adi.addProfessor(name, password, address, designation, department, doj);
 		System.out.println("\nNew Professor Added Successfully!\n");
 	}
 	
 	public void viewProfessors()
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.viewProfessors();	
 	}
 	
 	public void assignProfessorToCourse(int professorId, String courseCode)
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.assignProfessorToCourse(professorId, courseCode);
 		System.out.println("\nProfessor Assigned to Course Successfully!\n");
 	}
@@ -56,14 +54,13 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		String name = userDetails[0];
 		String address = userDetails[1];
 		String password = userDetails[2];
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
-		adi.addAdmin(name, password, address);
+		String doj = userDetails[3];
+		adi.addAdmin(name, password, address, doj);
 		System.out.println("\nNew Admin Added Successfully!\n");
 	}
 			
 	public void viewAdmins()
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.viewAdmins();
 		return;
 	}	
@@ -77,8 +74,9 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		String courseName = sc.nextLine();
 		System.out.print("Enter Course Instructor's Id: ");
 		int courseInstructor = sc.nextInt();
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
-		adi.addCourse(courseCode, courseName, courseInstructor);
+		System.out.print("Enter Course Fee: ");
+		int courseFees = sc.nextInt();
+		adi.addCourse(courseCode, courseName, courseInstructor, courseFees);
 		System.out.println("\nCourse Added Successfully!\n");
 		return;
 	}
@@ -86,7 +84,6 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 	
 	public void removeCourse(String courseCode)
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.removeCourse(courseCode);
 		System.out.println("\nCourse Removed Successfully!\n");
 		return;
@@ -95,7 +92,6 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 	
 	public void viewCourseDetails(String courseCode)
 	{
-//		AdminDAOImplementation adi = new AdminDAOImplementation();
 		adi.viewCourseDetails(courseCode);
 		return;		
 	}

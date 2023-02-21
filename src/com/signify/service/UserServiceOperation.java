@@ -45,24 +45,24 @@ public class UserServiceOperation implements UserInterface{
 					System.out.println("\nLogin in Process\n");
 				
 					UserDAOImplementation udi = new UserDAOImplementation();
-					String[] details = udi.login(username,  password);
+					int[] details = udi.login(username,  password);
 					int id = Integer.valueOf(details[1]);
-					if(details[0] != null)
+					if(details[0] != -1)
 					{
 						
-						if(details[0].equals("admin"))
+						if(details[0] == 2)
 						{
 							CRSAdminApplicationMenu as = new CRSAdminApplicationMenu();
 							as.displayAdminMenu(id);
 							break;
 						}
-						else if(details[0].equals("professor"))
+						else if(details[0] == 3)
 						{
 							CRSProfessorApplicationMenu ps = new CRSProfessorApplicationMenu();
 							ps.displayProfessorMenu(id);
 							break;
 						}
-						else if(details[0].equals("student"))
+						else if(details[0] == 1)
 						{
 		
 							StudentDAOImplementation sdi = new StudentDAOImplementation();
