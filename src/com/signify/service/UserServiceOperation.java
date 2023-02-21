@@ -10,9 +10,9 @@ import com.signify.bean.Student;
 import com.signify.client.CRSAdminApplicationMenu;
 import com.signify.client.CRSProfessorApplicationMenu;
 import com.signify.client.CRSStudentApplicationMenu;
-import com.signify.collection.UserDAOImplementation;
-import com.signify.collection.UserData;
 import com.signify.jdbc.StudentDAOImplementation;
+import com.signify.jdbc.UserDAOImplementation;
+import com.signify.jdbc.UserData;
 
 /**
  * @author dp201

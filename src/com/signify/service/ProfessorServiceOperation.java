@@ -3,7 +3,7 @@
  */
 package com.signify.service;
 import com.signify.bean.*;
-import com.signify.collection.UserData;
+import com.signify.jdbc.UserData;
 
 import java.util.*;
 /**

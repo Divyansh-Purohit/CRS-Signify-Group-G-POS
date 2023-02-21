@@ -1,7 +1,7 @@
 package com.signify.service;
 import com.signify.bean.*;
-import com.signify.collection.UserData;
 import com.signify.jdbc.AdminDAOImplementation;
+import com.signify.jdbc.UserData;
 
 import helper.*;
 import java.time.LocalDate;

@@ -4,7 +4,7 @@
 package helper;
 import java.util.Scanner;
 import com.signify.bean.Student;
-import com.signify.collection.UserData;
+import com.signify.jdbc.UserData;
 
 /**
  * @author dp201

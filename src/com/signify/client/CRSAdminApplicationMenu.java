@@ -4,8 +4,8 @@
 package com.signify.client;
 import java.util.*;
 
-import com.signify.collection.UserData;
 import com.signify.jdbc.AdminDAOImplementation;
+import com.signify.jdbc.UserData;
 import com.signify.service.AdminInterface;
 import com.signify.service.AdminServiceOperation;
 /**

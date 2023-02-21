@@ -1,4 +1,4 @@
-package com.signify.collection;
+package com.signify.jdbc;
 import com.signify.bean.*;
 import java.util.*;
 /**
