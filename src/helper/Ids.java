@@ -17,4 +17,13 @@ public class Ids {
 	   //  Database credentials
 	public static final String USER = "root";
 	public static final String PASS = "Siddharth@1993";
+	
+	static {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

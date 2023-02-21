@@ -5,13 +5,13 @@ public interface StudentDAOInterface {
 	
 	public void viewGrades(int studentId);	
 
-	public void viewGrade(int studentId, String courseId);
+	public void viewGrade(int studentId, String courseCode);
 		
 	public void viewRegisterCourses(int studentId);
 	
-	public void addCourse(int studentId);
+	public void addCourse(int studentId, String courseCode);
 	
-	public void dropCourse(int studentId, String courseId);
+	public void dropCourse(int studentId, String courseCode);
 	
 	public void payFees(int studentId);
 }

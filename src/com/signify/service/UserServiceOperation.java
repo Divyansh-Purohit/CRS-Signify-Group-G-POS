@@ -10,9 +10,9 @@ import com.signify.bean.Student;
 import com.signify.client.CRSAdminApplicationMenu;
 import com.signify.client.CRSProfessorApplicationMenu;
 import com.signify.client.CRSStudentApplicationMenu;
-import com.signify.collection.UserDAOImplementation;
 import com.signify.collection.UserData;
 import com.signify.jdbc.StudentDAOImplementation;
+import com.signify.jdbc.UserDAOImplementation;
 
 /**
  * @author dp201
@@ -47,8 +47,7 @@ public class UserServiceOperation implements UserInterface{
 					UserDAOImplementation udi = new UserDAOImplementation();
 					String[] details = udi.login(username,  password);
 					int id = Integer.valueOf(details[1]);
-					
-					if(!(details[0] == null))
+					if(details[0] != null)
 					{
 						
 						if(details[0].equals("admin"))
@@ -91,13 +90,20 @@ public class UserServiceOperation implements UserInterface{
 				}
 				case 3:
 				{
-					UserInterface us = new UserServiceOperation();
-					us.updatePassword();
+					String username, password;
+					UserDAOImplementation udi = new UserDAOImplementation();
+					sc.nextLine();
+					System.out.print("\nEnter Username: ");
+					username = sc.nextLine();
+					System.out.print("Enter Password: ");
+					password = sc.nextLine();
+					udi.updatePassword(username, password);
 					break;
 				}
 				
 				case 4:
 				{
+					System.out.println("\nLogging Out!\n");
 					return;
 				}
 				default:
@@ -119,123 +125,5 @@ public class UserServiceOperation implements UserInterface{
 		System.out.println("Details Updated!");
 	}
 	
-	
-	public void updatePassword()
-	{
-		String username, password, role, newPassword;
-		int studentId = -1, professorId = -1, adminId = -1;
-		Scanner sc = new Scanner(System.in);
-//		sc.nextLine();
-//		while(true) 
-//		{
-			System.out.print("Enter username: ");
-			username = sc.nextLine();
-			System.out.print("Enter password: ");
-			password = sc.nextLine();
-			System.out.print("Enter role: ");
-			role = sc.nextLine().toUpperCase();
-			boolean flag = false;
-			switch(role)
-			{
-				case "STUDENT":
-				{
-					HashMap<Integer, Student> hmp = UserData.students;
-					for(Map.Entry<Integer, Student> m: hmp.entrySet())
-					{
-						Student student = m.getValue();
-						if(username.equals(student.getName()) && password.equals(student.getPassword()))
-						{
-							studentId = student.getStudentId();
-							flag = true;
-							break;
-						}
-					}
-							
-					if(!flag) {
-						System.out.println("\nUsername and Password did not match!\n");
-						return;
-					}
-					
-					System.out.print("Enter new password: ");
-					newPassword = sc.nextLine();
-					try {
-						UserData.students.get(studentId).setPassword(newPassword);
-					}
-					catch(Exception e)
-					{
-						System.out.println("\nPassword could not be updated, please try again!");
-						return;
-					}
-					System.out.println("\nPassword Updated Successfully!\n");
-					break;
-				}
-				case "PROFESSOR":
-				{
-					HashMap<Integer, Professor> hmp = UserData.professors;
-					for(Map.Entry<Integer, Professor> m: hmp.entrySet())
-					{
-						Professor prf = m.getValue();
-						if(username.equals(prf.getName()) && password.equals(prf.getPassword()))
-						{
-							professorId = prf.getUserId();
-							flag = true;
-							break;
-						}
-					}
-					if(!flag) {
-						System.out.println("\nUsername and Password did not match!\n");
-						return;
-					}
-					
-					System.out.print("Enter new password: ");
-					newPassword = sc.nextLine();
-					try {
-						UserData.professors.get(professorId).setPassword(newPassword);
-					}
-					catch(Exception e)
-					{
-						System.out.println("\nPassword could not be updated, please try again!");
-						return;
-					}
-					System.out.println("\nPassword Updated Successfully!\n");
-					break;
-				}
-				case "ADMIN":
-				{
-					HashMap<Integer, Admin> hmp = UserData.admins;
-					for(Map.Entry<Integer, Admin> m: hmp.entrySet())
-					{
-						Admin admin = m.getValue();
-						if(username.equals(admin.getName()) && password.equals(admin.getPassword()))
-						{
-							adminId = admin.getUserId();
-							flag = true;
-							break;
-						}
-					}
-					if(!flag) {
-						System.out.println("\nUsername and Password did not match!\n");
-						return;
-					}
-					
-					System.out.print("Enter new password: ");
-					newPassword = sc.nextLine();
-					try {
-						UserData.admins.get(adminId).setPassword(newPassword);
-					}
-					catch(Exception e)
-					{
-						System.out.println("\nPassword could not be updated, please try again!");
-						return;
-					}
-					System.out.println("\nPassword Updated Successfully!\n");
-					break;
-				}
-				default:
-				{
-					System.out.println("\nInvalid Input Received!\n");
-				}
-			}
-//		}
-	}
+	public void updatePassword() {}
 }

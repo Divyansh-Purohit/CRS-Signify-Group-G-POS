@@ -1,8 +1,11 @@
 package com.signify.jdbc;
 
+import java.util.List;
+import com.signify.bean.Student;
+
 public interface ProfessorDAOInterface {
-	public void viewEnrolledStudents(int professorId);
+	public List<Integer> viewEnrolledStudents(int professorId);
 	
-	public void addGrades(int professorId, int studentId);
+	public void addGrades(int professorId , int studentId , String grade);
 
 }
