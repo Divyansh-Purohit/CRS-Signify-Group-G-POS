@@ -22,6 +22,7 @@ public class ProfessorServiceOperation extends UserServiceOperation implements P
 		{
 			System.out.println(x);
 		}
+		System.out.println();
 	}
 	
 	public void addGrades(int professorId, int StudentId, String grade)

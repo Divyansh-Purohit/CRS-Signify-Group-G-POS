@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import com.signify.bean.Course;
 import com.signify.bean.Grades;
+import com.signify.constants.SQLConstants;
+import com.signify.utils.DBUtils;
 
 /**
  * @author dp201
@@ -23,19 +25,20 @@ import com.signify.bean.Grades;
  */
 public class StudentDAOImplementation implements StudentDAOInterface, StudentPaymentInterface {
 
+	
+	private Connection conn; 
+	
 	public void register(String username, String password, String address, int sem, String branch, String batch, String bg, String fname, String phnum, String doj) {
+		
 		int user_id = -1;
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_id = null;
 		PreparedStatement stmt_student = null;
 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "insert into user(username, password, address, doj, roleid) values(?,?,?,?,?)";
-			
-			stmt = conn.prepareStatement(sql); 
+			conn = DBUtils.getConnection();
+			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER); 
 			stmt.setString(1, username);
 			stmt.setString(2, password);
 			stmt.setString(3, address);
@@ -44,32 +47,32 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 			stmt.executeUpdate();
 			stmt.close();
 			
-			String sql_id = "select userid from user where username=" + "\"" + username + "\"" + " and password=" + "\"" + password + "\"";
-			stmt_id = conn.prepareStatement(sql_id);
-			ResultSet rs = stmt_id.executeQuery(sql_id);
+			stmt_id = conn.prepareStatement(SQLConstants.GET_USER_ID);
+			stmt_id.setString(1, username);
+			stmt_id.setString(2,  password);
+			ResultSet rs = stmt_id.executeQuery();
 			while (rs.next()) {
 				user_id = rs.getInt("userid");
 			}
 			rs.close();
 			stmt_id.close();
 			
-			String sql_student = "insert into student(userid, studentid, studentname, semester, branch, batch, bloodgroup, fathername, phone, isapproved, numcourses) values(?,?,?,?,?,?,?,?,?,?,?)";
+			String sql_student = "insert into student(userid, studentname, semester, branch, batch, bloodgroup, fathername, phone, isapproved, numcourses) values(?,?,?,?,?,?,?,?,?,?)";
 			stmt_student = conn.prepareStatement(sql_student);
 			stmt_student.setInt(1, user_id);
-			stmt_student.setInt(2, 5001);
-			stmt_student.setString(3, username);
-			stmt_student.setInt(4, sem);
-			stmt_student.setString(5, branch);
-			stmt_student.setString(6, batch);
-			stmt_student.setString(7, bg);
-			stmt_student.setString(8, fname);
-			stmt_student.setString(9, phnum);
+			stmt_student.setString(2, username);
+			stmt_student.setInt(3, sem);
+			stmt_student.setString(4, branch);
+			stmt_student.setString(5, batch);
+			stmt_student.setString(6, bg);
+			stmt_student.setString(7, fname);
+			stmt_student.setString(8, phnum);
+			stmt_student.setInt(9, 0);
 			stmt_student.setInt(10, 0);
-			stmt_student.setInt(11, 0);
 			stmt_student.executeUpdate();
 			stmt_student.close();
-
 			conn.close();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
@@ -91,12 +94,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	
 	public int getStudentId(int userId)
 	{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		int student_id = 0;
-
+		
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();	
 			String sql = "select studentid from student where userid=?";			
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, userId);
@@ -131,12 +133,14 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	public int getIsApprovedStatus(int student_id)
 	{
-		Connection conn = null;
+		
 		PreparedStatement stmt = null;
 		int isapproved = 0;
+		
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			
+			conn = DBUtils.getConnection();
 			String sql = "select isapproved from student where studentid=?";			
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, student_id);
@@ -171,12 +175,12 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	
 	public List<Course> getAvailableCourses()
 	{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Course> ac = new ArrayList<Course>();
+		
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "select coursecode, coursename, instructor, numstudents from catalog where numstudents < 10";
 			stmt = conn.prepareStatement(sql);
 
@@ -216,14 +220,16 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	
 	public void addCourse(int student_id, String courseCode, int type)
 	{
-		Connection conn = null;
+		
 		PreparedStatement stmt_1 = null;
 		PreparedStatement stmt_2 = null;
-		PreparedStatement stmt_3 = null;		
+		PreparedStatement stmt_3 = null;
+		int num = -1, sem = -1;
+		
 		try {
 			
-			int num = -1, sem = -1;
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			
+			conn = DBUtils.getConnection();
 //			String sql_1 = "select semester, numcourses from catalog where studentid = ? and coursecode = ?";
 			String sql_1 = "insert into registeredcourse values(?,?,?,?,?)";
 			stmt_1 = conn.prepareStatement(sql_1);
@@ -290,18 +296,17 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	
 	public void dropCourse(int studentId, String courseId)
 	{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_1 = null;		
 		
 		try{
-			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
+			   
+			   conn = DBUtils.getConnection();
 			   String sql="DELETE FROM registeredcourses where courseCode="+courseId+"and studentId="+studentId;
 			   stmt = conn.prepareStatement(sql);
 			   ResultSet rs = stmt.executeQuery(sql);
 			   rs.close();
-			   stmt.close();
-			   
+			   stmt.close();  
 			   
 			   String sql_1="update catalog SET numstudents=numstudents-1 WHERE coursecode="+courseId;
 			   stmt_1 = conn.prepareStatement(sql_1);
@@ -333,12 +338,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	public List<Grades> viewGrades(int student_id)
 	{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Grades> grades = new ArrayList<Grades>(); 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "select rc.courseCode as coursecode, cat.coursename as coursename, rc.grade from registeredcourse rc natural join catalog cat where rc.studentId="	+ student_id  + " and type = 1";
 			stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -353,8 +357,7 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 					Grades g = new Grades();
 					g.setCourseCode(cc);
 					g.setCourseName(cn);
-					g.setGrade(grade);
-					
+					g.setGrade(grade);		
 					grades.add(g);
 				}
 			}
@@ -385,12 +388,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	public String[] viewGrade(int studentId, String courseCode)
 	{		
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		String[] arr = new String[4]; 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "select rc.courseCode as coursecode, cat.instructor as instructor, cat.coursename as coursename, rc.grade from registeredcourse rc natural join catalog cat where rc.studentId="	+ studentId  + " and type = 1 and cat.courseCode = ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, courseCode);
@@ -432,12 +434,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	public List<Course> viewRegisteredCourses(int studentId) 
 	{	
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Course> rcourses = new ArrayList<Course>(); 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "select rc.courseCode, cat.coursename as coursename, cat.instructor as instructor, rc.type as type from registeredcourse rc natural join catalog cat where rc.studentId="+studentId;
 			stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -482,12 +483,12 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 		return rcourses;
 	}
 	public int getFees(int studentId) {
-		Connection conn = null;
+		
 		PreparedStatement stmt = null;
 		int total = 0;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "select catalog.coursecode as coursecode , coursename , coursefee from registeredcourse inner join catalog on registeredcourse.coursecode = catalog.coursecode where studentId=\""
 					+ studentId + "\"";
 			stmt = conn.prepareStatement(sql);
@@ -533,11 +534,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	@Override
 	public void payFeesByCard(Integer studentId, String cardNumber, String cardType, int amount) {
-		Connection conn = null;
+		
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
 			String sql_s = "insert into payment_online(referenceidfk , card , cardnumber , cardtype , modeoftransfer , accountnumber , ifscode) values(? , ? , ? , ? , ? , ? , ?)";
 
@@ -587,11 +588,10 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	@Override
 	public void payFeesByNetBanking(Integer studentId, String modeOfTransfer, String accountNumber, String ifscCode,
 			int amount) {
-		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
 			String sql_s = "insert into payment_online(referenceidfk , card , cardnumber , cardtype , modeoftransfer , accountnumber , ifscode) values(? , ? , ? , ? , ? , ? , ?)";
 
@@ -640,12 +640,12 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	@Override
 	public void payFeesByCheque(Integer studentId, String bankName, String chequeNumber, int amount) {
-		Connection conn = null;
+		
 		PreparedStatement stmt = null, stmt_s = null;
 		
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
 			String sql_s = "insert into payment_offline(referenceid , cash , chequenumber , bankname) values(? , ? , ? , ?)";
 
@@ -691,12 +691,11 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 
 	@Override
 	public void payFeesByCash(Integer studentId, int amount) {
-		Connection conn = null;
+		
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
 			String sql_s = "insert into payment_offline(referenceid , cash , chequenumber , bankname) values(? , ? , ? , ?)";
 

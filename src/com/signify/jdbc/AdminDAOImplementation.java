@@ -2,7 +2,7 @@
  * 
  */
 package com.signify.jdbc;
-
+import com.signify.exception.*;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;

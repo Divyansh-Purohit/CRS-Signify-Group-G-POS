@@ -16,7 +16,7 @@ public class Ids {
 
 	   //  Database credentials
 	public static final String USER = "root";
-	public static final String PASS = "root";
+	public static final String PASS = "Siddharth@1993";
 	
 	static {
 		try {
