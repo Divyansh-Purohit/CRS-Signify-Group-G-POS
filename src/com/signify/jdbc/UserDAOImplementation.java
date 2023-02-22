@@ -1,22 +1,25 @@
 /**
  * 
  */
-package com.signify.collection;
+package com.signify.collection
+package com.signify.jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.signify.jdbc.UserDAOInterface;
+import java.util.Scanner;
 
 /**
  * @author srish
  *
  */
+
 public class UserDAOImplementation implements UserDAOInterface{
-	public String[] login(String username, String password)
+	public int[] login(String username, String password)
 	{
-		int userid = -1;
+		int user_id = -1
 		int role = -1;
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -26,6 +29,8 @@ public class UserDAOImplementation implements UserDAOInterface{
 			   Class.forName("com.mysql.jdbc.Driver");
 			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
 			   String sql="select userid, roleid from user1 where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
+			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
+			   String sql="select userid, roleid from user where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
 			   stmt = conn.prepareStatement(sql);			   
 			   
 			   ResultSet rs = stmt.executeQuery(sql);
@@ -57,7 +62,7 @@ public class UserDAOImplementation implements UserDAOInterface{
 			       se.printStackTrace();
 			    }
 		}
-		String[] ans = {Integer.toString(roleid), Integer.toString(userid)};
+		int[] ans = {roleid,userid};
 		return ans;
 	}
 	public boolean updatePassword(String username, String oldPassword, String newPassword) {

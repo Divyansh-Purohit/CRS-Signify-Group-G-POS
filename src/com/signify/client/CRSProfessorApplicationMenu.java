@@ -1,4 +1,5 @@
 package com.signify.client;
+import com.signify.jdbc.ProfessorDAOImplementation;
 import com.signify.service.ProfessorInterface;
 import com.signify.service.ProfessorServiceOperation;
 import java.util.*;
@@ -19,19 +20,23 @@ public class CRSProfessorApplicationMenu {
 		{
 			System.out.println("PRESS 1 FOR VIEWING ENROLLED STUDENTS\nPRESS 2 TO ADD GRADES\nPRESS 3 TO LOGOUT");
 			int choice = sc.nextInt();
-			ProfessorInterface ps = new ProfessorServiceOperation();
+//			ProfessorInterface ps = new ProfessorServiceOperation();
+			ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 			switch(choice)
 			{
 				case 1:
 				{
-					ps.viewEnrolledStudents(professorId);
+					pdi.viewEnrolledStudents(professorId);
 					break;
 				}
 				case 2:
 				{
 					System.out.print("Enter Student Id: ");
 					int sId = sc.nextInt();
-					ps.addGrades(professorId, sId);
+					sc.nextLine();
+					System.out.println("Enter Grade: ");
+					String grade = sc.nextLine();
+					pdi.addGrades(professorId, sId, grade);
 					break;
 				}
 				case 3:

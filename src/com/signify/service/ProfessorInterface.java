@@ -4,6 +4,6 @@ public interface ProfessorInterface {
 	
 	public void viewEnrolledStudents(int professorId);
 	
-	public void addGrades(int professorId, int studentId);
+	public void addGrades(int professorId, int studentId, String grade);
 
 }

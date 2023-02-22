@@ -4,6 +4,7 @@ import com.signify.jdbc.StudentDAOImplementation;
 import com.signify.bean.*;
 import helper.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 /**
  * @author dp201
@@ -11,6 +12,8 @@ import java.util.*;
  */
 
 public class StudentServiceOperation extends UserServiceOperation implements StudentInterface{
+	
+	StudentDAOImplementation sdi = new StudentDAOImplementation();
 	
 	public void register()
 	{	
@@ -20,166 +23,64 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 		String address = userDetails[1];
 		String password = userDetails[2];
 		System.out.print("Enter Semester: ");
-		int semester = sc.nextInt();
-		LocalDate doj = LocalDate.now();
-		
-		
-		StudentDAOImplementation sdi = new StudentDAOImplementation();
-		sdi.register(username, password, address);
-		
-//		Student newStudent = new Student();
-//		newStudent.setName(username);
-//		newStudent.setAddress(address);
-//		newStudent.setPassword(password);
-//		newStudent.setSemester(semester);
-//		newStudent.setDateOfRegistration(doj);
-//		newStudent.setStudentId(Ids.studentId++);
-//		newStudent.setUserId(Ids.userId++);
-//		newStudent.setApproved(false);
-//		newStudent.setNumRegCourses(0);
-//						
-//		try
-//		{
-//			UserData.students.put(newStudent.getStudentId(), newStudent);
-//		}
-//		catch(Exception e)
-//		{
-//			System.out.println("\nFailed to Register, please try again!");
-//		}
-//	    System.out.println("\nStudent Registration Successful! Waiting for approval from admin.");
+		int sem = sc.nextInt();
+		System.out.print("Enter Branch: ");
+		String branch = sc.nextLine();
+		System.out.print("Enter Batch: ");
+		String batch = sc.nextLine();
+		System.out.print("Enter Blood Group: ");
+		String bloodgroup = sc.nextLine();
+		System.out.print("Enter Father's Name: ");
+		String fname = sc.nextLine();
+		System.out.print("Enter Phone Number: ");
+		String phnum = sc.nextLine();
+		String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		sdi.register(username, password, address, sem, branch, batch, bloodgroup, fname, phnum, doj);
+		System.out.println("\nStudent Registration Successful! Waiting for approval from admin.");
 	}
 	
 	public void viewGrades(int studentId)
-	{
-		Student currStudent = UserData.students.get(studentId);
-		if(currStudent.getNumRegCourses() == 0)
-		{
-			System.out.println("\nNo Courses Found!\n");
-			return;
-		}
-		HashMap<String, RegisteredCourse> rg = currStudent.getRegCourses();
-		
-		System.out.println("\nCourse Code\tCourse Name\tGrade Awarded\n");
-		for(Map.Entry<String, RegisteredCourse> m: rg.entrySet()) {
-			RegisteredCourse c = m.getValue();
-			System.out.println(c.getCourseCode()+"\t"+c.getName()+"\t"+c.getGrade());
-		}
-		
-		System.out.println("\nAll Registered Courses Grades Viewed!\n");
+	{	
+		sdi.viewGrades(studentId);
 	}
 	
 	public void viewGrade(int studentId, String courseId)
 	{
-		Student currStudent = UserData.students.get(studentId);
-		if(currStudent.getNumRegCourses() == 0)
-		{
-			System.out.println("\nNo Courses Found!\n");
-			return;
-		}
-
-		HashMap<String, RegisteredCourse> rg = currStudent.getRegCourses();
-		System.out.println("\nCourse Code\tCourse Name\tGrade Awarded\n");
-		for(Map.Entry<String, RegisteredCourse> m: rg.entrySet()) {
-			RegisteredCourse c = m.getValue();
-			if(c.getCourseCode().equals(courseId))
-				System.out.println(c.getCourseCode()+"\t"+c.getName()+"\t"+c.getGrade());
-			else 
-				continue;
-		}
-		System.out.println("Course Grade Viewed!");
+		sdi.viewGrade(studentId, courseId);
 	}
-		
+
 	public void viewRegisterCourses(int studentId)
 	{	
-		System.out.println("\nList of courses you're registered in");
-		System.out.println("==========================\n");
-		System.out.println("Course Code\tCourse Name");
-		Student currStudent = UserData.students.get(studentId);
-		HashMap<String, RegisteredCourse> rg = currStudent.getRegCourses();
-		for(Map.Entry<String, RegisteredCourse> m:rg.entrySet()) {
-			RegisteredCourse r = m.getValue();
-			System.out.println(r.getCourseCode()+"\t"+r.getName());
+		List<Course> rcourses = sdi.viewRegisteredCourses(studentId);
+		System.out.println("Course_Code  Course_Name  Course_Instructor  Type");
+		System.out.println("=================================================");
+		for(Course x: rcourses)
+		{
+			System.out.println(x.getCourseCode()+"\t"+x.getName()+"\t"+x.getInstructor()+"\t"+x.getType());
 		}
-		System.out.println();
-		return;
 	}
 	
 	public void addCourse(int studentId)
 	{	
-		Student currStudent = UserData.students.get(studentId);
-		if(currStudent.getNumRegCourses() == 4)
+		List<Course> ac = sdi.getAvailableCourses();
+		System.out.println("Course_Code  Course_Name  Course_Instructor  Seats");
+		System.out.println("=================================================");
+		for(Course x: ac)
 		{
-			System.out.println("\nYou can't register up for more courses!\n");
-			return;
+			System.out.println(x.getCourseCode()+"\t"+x.getName()+"\t"+x.getInstructor()+"\t"+x.getSeatsAvailable());
 		}
-		System.out.println("\nChoose from one of available courses");
-		System.out.println("====================================");
-		System.out.println("Course Code\tCourse Name\tAvailable Seats");
-		for(Map.Entry<String, Course> m:UserData.courses.entrySet())
-		{  
-			Course c = m.getValue();
-			if(c.getSeatsAvailable() <= 9)
-			{
-				System.out.println(m.getKey()+"\t"+c.getName()+"\t"+c.getSeatsAvailable());
-			}
-			else
-				continue;
-		} 
+		System.out.println();
 		Scanner sc = new Scanner(System.in);
-		sc.nextLine();
-		System.out.println("===================");
-		System.out.print("\nEnter Course Id: ");
-		String c_id = sc.nextLine();
-		
-		Course intCourse = UserData.courses.get(c_id);
-		intCourse.setSeatsAvailable(intCourse.getSeatsAvailable()-1);
-		intCourse.setNumStudents(intCourse.getNumStudents()+1);
-		
-		RegisteredCourse rg = new RegisteredCourse();
-		rg.setCourseCode(c_id);
-		rg.setName(intCourse.getName());
-		rg.setSemester(currStudent.getSemester());
-		rg.setGrade("NA");
-		
-		try {
-			HashMap<String, RegisteredCourse> mp = currStudent.getRegCourses();
-			mp.put(c_id, rg);
-		}
-		catch(Exception e)
-		{
-			System.out.println("\nCouldn't register in course, please try again!\n");
-			return;
-		}
-		
-		HashMap<Integer, String> eS = intCourse.getEnrolledStudents();
-		eS.put(studentId, currStudent.getName());
-		intCourse.setEnrolledStudents(eS);
-		currStudent.setNumRegCourses(currStudent.getNumRegCourses()+1);
-		System.out.println("\nEnrolled in Course (Course Id: "+c_id+")!\n");
+		System.out.println("Enter Course Code: ");
+		String cc = sc.nextLine();
+		System.out.println("Enter Type (1/2): ");
+		int type = sc.nextInt();
+		sdi.addCourse(studentId, cc, type);
 	}
 	
 	public void dropCourse(int studentId, String courseId)
 	{
-		Student currStudent = UserData.students.get(studentId);
-		if(currStudent.getNumRegCourses() == 0)
-		{
-			System.out.println("\nYou haven't registerd for any course!\n");
-			return;
-		}
-		HashMap<String, RegisteredCourse> mp = currStudent.getRegCourses();
-		try {
-			mp.remove(courseId);
-		}
-		catch(Exception e)
-		{
-			System.out.println("\nCouldn't drop course at the moment. please try again!\n");
-			return;
-		}
-		Course currCourse = UserData.courses.get(courseId);
-		currCourse.setNumStudents(currCourse.getNumStudents()-1);
-		currCourse.setSeatsAvailable(currCourse.getSeatsAvailable()+1);
-		currStudent.setNumRegCourses(currStudent.getNumRegCourses()-1);
-		System.out.println("\nCourse (Course Id: "+courseId+") Dropped Successfully!\n");
+		sdi.dropCourse(studentId, courseId);
 	}
 	
 	public void payFees(int studentId)

@@ -5,6 +5,13 @@ public class Course {
 	private int instructor;
 	private boolean isOffered;
 	private int seatsAvailable;
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	private int type;
 	
 	public int getSeatsAvailable() {
 		return seatsAvailable;

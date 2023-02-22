@@ -16,5 +16,10 @@ public class CRSApplicationMenu {
 		UserServiceOperation uso = new UserServiceOperation();
 		uso.login();
 		System.out.println("\nExitting from CRS!\n");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }
