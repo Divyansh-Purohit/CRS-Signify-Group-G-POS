@@ -13,8 +13,6 @@ import com.signify.service.AdminServiceOperation;
  *
  */
 public class CRSAdminApplicationMenu {
-	public static void main(String[] args) {
-	}
 	
 	public void displayAdminMenu(int adminId)
 	{

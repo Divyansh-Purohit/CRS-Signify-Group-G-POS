@@ -5,7 +5,9 @@ import java.util.*;
 public interface StudentDAOInterface {
 	public void register(String username, String password, String address, int sem, String branch, String batch, String bg, String fname, String phnum, String doj);
 	
-	public boolean getIsApprovedStatus(int student_id);
+	public int getStudentId(int userId);
+	
+	public int getIsApprovedStatus(int student_id);
 	
 	public List<Course> getAvailableCourses();
 	
@@ -19,5 +21,5 @@ public interface StudentDAOInterface {
 		
 	public List<Course> viewRegisteredCourses(int studentId);
 		
-	public void payFees(int studentId);
+	public int getFees(int studentId);
 }

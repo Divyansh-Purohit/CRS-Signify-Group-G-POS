@@ -9,8 +9,6 @@ import java.util.*;
  */
 public class CRSProfessorApplicationMenu {
 
-	public static void main(String[] args) {
-	}
 	public void displayProfessorMenu(int professorId)
 	{
 		System.out.println("\nWELCOME TO PROFESSOR MENU");

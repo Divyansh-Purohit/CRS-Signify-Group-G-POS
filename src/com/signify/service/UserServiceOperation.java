@@ -46,7 +46,7 @@ public class UserServiceOperation implements UserInterface{
 				
 					UserDAOImplementation udi = new UserDAOImplementation();
 					int[] details = udi.login(username,  password);
-					int id = Integer.valueOf(details[1]);
+					int id = details[1];
 					if(details[0] != -1)
 					{
 						
@@ -66,10 +66,11 @@ public class UserServiceOperation implements UserInterface{
 						{
 		
 							StudentDAOImplementation sdi = new StudentDAOImplementation();
-							boolean isApproved = sdi.getIsApprovedStatus(id);
+							int studentId = sdi.getStudentId(id);
+							int isApproved = sdi.getIsApprovedStatus(studentId);
 							CRSStudentApplicationMenu ss = new CRSStudentApplicationMenu();
-							if(isApproved)
-								ss.displayStudentMenu(id);
+							if(isApproved == 1)
+								ss.displayStudentMenu(studentId);
 							else
 								System.out.println("\nYou aren't approved yet!\n");
 							break;
@@ -90,14 +91,7 @@ public class UserServiceOperation implements UserInterface{
 				}
 				case 3:
 				{
-					String username, password;
-					UserDAOImplementation udi = new UserDAOImplementation();
-					sc.nextLine();
-					System.out.print("\nEnter Username: ");
-					username = sc.nextLine();
-					System.out.print("Enter Password: ");
-					password = sc.nextLine();
-					udi.updatePassword(username, password);
+					updatePassword();
 					break;
 				}
 				
@@ -125,5 +119,17 @@ public class UserServiceOperation implements UserInterface{
 		System.out.println("Details Updated!");
 	}
 	
-	public void updatePassword() {}
+	public void updatePassword() {
+		String username, password, newPassword;
+		Scanner sc = new Scanner(System.in);
+		UserDAOImplementation udi = new UserDAOImplementation();
+		sc.nextLine();
+		System.out.print("\nEnter Username: ");
+		username = sc.nextLine();
+		System.out.print("Enter Password: ");
+		password = sc.nextLine();
+		System.out.print("Enter New Password: ");
+		newPassword = sc.nextLine();
+		udi.updatePassword(username, password, newPassword);
+	}
 }

@@ -1,13 +1,9 @@
 package com.signify.jdbc;
-
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import com.signify.bean.Student;
@@ -23,13 +19,12 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select * from student_course inner join professor on student_course.course_code = professor.coursetaught where professor_id = "
-					+ professorId;
+			String sql = "select * from registeredcourse inner join professor on registeredcourse.courseCode = professor.course where professorid = "+ professorId;
 			stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			Student st = new Student();
 			while (rs.next()) {
-				students.add(rs.getInt("student_id"));
+				students.add(rs.getInt("studentId"));
 			}
 
 			rs.close();
@@ -61,20 +56,21 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_s = null;
+		grade = grade.toUpperCase();
 
 		try {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select coursetaught from professor where professor_id = ?";
-			String sql_grade = "update student_course set grade = ? where student_id = ? and course_code = ?";
+			String sql = "select course from professor where professorid = ?";
+			String sql_grade = "update registeredcourse set grade = ? where studentId = ? and courseCode = ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, professorId);
 			ResultSet rs = stmt.executeQuery();
 			
 			stmt_s = conn.prepareStatement(sql_grade);
 			while(rs.next()) {
-				coursecode = rs.getString("coursetaught");
+				coursecode = rs.getString("course");
 			}
 			
 			rs.close();

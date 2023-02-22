@@ -7,9 +7,7 @@ import com.signify.service.*;
  *
  */
 public class CRSStudentApplicationMenu {
-	public static void main(String[] args) {
 
-	}
 	
 	public void displayStudentMenu(int studentId)
 	{
