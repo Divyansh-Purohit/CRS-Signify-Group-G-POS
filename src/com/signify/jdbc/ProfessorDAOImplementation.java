@@ -15,13 +15,12 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Integer> students = new ArrayList<Integer>();
-
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 			String sql = "select * from registeredcourse inner join professor on registeredcourse.courseCode = professor.course where professorid = "+ professorId;
 			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 			Student st = new Student();
 			while (rs.next()) {
 				students.add(rs.getInt("studentId"));

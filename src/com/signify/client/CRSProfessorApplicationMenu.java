@@ -1,4 +1,5 @@
 package com.signify.client;
+import com.signify.bean.Student;
 import com.signify.jdbc.ProfessorDAOImplementation;
 import com.signify.service.ProfessorInterface;
 import com.signify.service.ProfessorServiceOperation;
@@ -24,7 +25,11 @@ public class CRSProfessorApplicationMenu {
 			{
 				case 1:
 				{
-					pdi.viewEnrolledStudents(professorId);
+					System.out.println("Listing enrolled students...");
+					List<Integer> students = pdi.viewEnrolledStudents(professorId);
+					for (Integer i : students) {
+						System.out.println("Student id \t" + i);
+					}
 					break;
 				}
 				case 2:
@@ -35,6 +40,7 @@ public class CRSProfessorApplicationMenu {
 					System.out.println("Enter Grade: ");
 					String grade = sc.nextLine();
 					pdi.addGrades(professorId, sId, grade);
+					System.out.println("Student Graded");
 					break;
 				}
 				case 3:
