@@ -16,8 +16,8 @@ import com.signify.jdbc.UserDAOInterface;
 public class UserDAOImplementation implements UserDAOInterface{
 	public String[] login(String username, String password)
 	{
-		int user_id = -1;
-		String role = null;
+		int userid = -1;
+		int role = -1;
 		Connection conn = null;
 		PreparedStatement stmt = null;
 				
@@ -25,15 +25,15 @@ public class UserDAOImplementation implements UserDAOInterface{
 			   
 			   Class.forName("com.mysql.jdbc.Driver");
 			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
-			   String sql="select user_id, role from user where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
+			   String sql="select userid, roleid from user1 where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
 			   stmt = conn.prepareStatement(sql);			   
 			   
 			   ResultSet rs = stmt.executeQuery(sql);
 			   
 			   while(rs.next())
 			   {
-			      user_id = rs.getInt("user_id");
-			      role = rs.getString("role");
+			      user_id = rs.getInt("userid");
+			      role = rs.getInt("roleid");
 			   }
 			   
 			   rs.close();
@@ -57,7 +57,7 @@ public class UserDAOImplementation implements UserDAOInterface{
 			       se.printStackTrace();
 			    }
 		}
-		String[] ans = {role, Integer.toString(user_id)};
+		String[] ans = {Integer.toString(roleid), Integer.toString(userid)};
 		return ans;
 	}
 	public boolean updatePassword(String username, String oldPassword, String newPassword) {
@@ -70,7 +70,7 @@ public class UserDAOImplementation implements UserDAOInterface{
     try {
         Class.forName("com.mysql.jdbc.Driver");
         conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-        String sqlSelect = "SELECT COUNT(*) FROM user WHERE username=? AND password=?";
+        String sqlSelect = "SELECT COUNT(*) FROM user1 WHERE username=? AND password=?";
         stmtSelect = conn.prepareStatement(sqlSelect);
         stmtSelect.setString(1, username);
         stmtSelect.setString(2, oldPassword);
@@ -78,7 +78,7 @@ public class UserDAOImplementation implements UserDAOInterface{
         rs.next();
         int count = rs.getInt(1);
         if (count == 1) {
-            String sqlUpdate = "UPDATE user SET password=? WHERE username=?";
+            String sqlUpdate = "UPDATE user1 SET password=? WHERE username=?";
             stmtUpdate = conn.prepareStatement(sqlUpdate);
             stmtUpdate.setString(1, newPassword);
             stmtUpdate.setString(2, username);
