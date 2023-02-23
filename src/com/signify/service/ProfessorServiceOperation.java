@@ -17,7 +17,6 @@ public class ProfessorServiceOperation extends UserServiceOperation implements P
 	{
 		ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 		List<Student> es = pdi.viewEnrolledStudents(professorId);
-//		System.out.println(es.size());
 		return es;
 	}
 	

@@ -46,8 +46,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_student = "insert into student(userid, studentid, studentname, branch, age, bloodgroup, fname, phnum, isapproved, numcourses) values(?,?,?,?,?,?,?,?,?,?)";
-			stmt_student = conn.prepareStatement(sql_student);
+			stmt_student = conn.prepareStatement(SQLConstants.REGISTER_STUDENT);
 			stmt_student.setString(1, student.getUserId());
 			stmt_student.setString(2, student.getStudentId());
 			stmt_student.setString(3, student.getName());
@@ -58,6 +57,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt_student.setString(8, student.getPhnum());
 			stmt_student.setInt(9, 0);
 			stmt_student.setInt(10, 0);
+			stmt_student.setInt(11, 0);
 			stmt_student.executeUpdate();
 			stmt_student.close();
 			conn.close();
@@ -88,8 +88,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select studentid from student where userid=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.GET_STUDENT_ID);
 			stmt.setString(1, userid);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -128,8 +127,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select isapproved from student where studentid=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.GET_ISAPPROVED_STATUS);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -167,10 +165,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select coursecode, coursename, instructor, numstudents from catalog where numstudents < 10";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.GET_AVAILABLE_COURSES);
 
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Course c = new Course();
 				c.setCourseCode(rs.getString("coursecode"));
@@ -289,7 +286,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_1 = "update catalog SET numstudents=numstudents-1 WHERE coursecode=" + courseId;
 			stmt_1 = conn.prepareStatement(SQLConstants.UPADTE_CATALOG_AFTER_STUDENT);
 			stmt_1.setString(1, studentid);
 			stmt_1.executeUpdate();
@@ -383,7 +379,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 				while (rs.next()) {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
-//					double cf = rs.getDouble("coursefee");
 					int type = rs.getInt("type");
 					
 					RegisteredCourse c = new RegisteredCourse();
@@ -420,7 +415,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 	public List<Course> getFees(String studentid) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-//		int total = 0;
 		List<Course> courses = new ArrayList<Course>();
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
@@ -435,7 +429,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					String coursecode = rs.getString("coursecode");
 					String coursename = rs.getString("coursename");
 					int fee = rs.getInt("coursefee");
-//					total += fee;
 					Course c = new Course();
 					c.setCourseCode(coursecode);
 					c.setName(coursename);
@@ -444,7 +437,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 				}
 			}
 
-//			System.out.println("Total Fees : \t" + total + "\n");
 			rs.close();
 			stmt.close();
 			conn.close();

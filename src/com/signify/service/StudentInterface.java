@@ -22,11 +22,11 @@ public interface StudentInterface {
 	public void semesterRegstration();
 	public void addCourse(String studentId, String courseCode, int type);
 	public void dropCourse(String studentId, String courseId);		
-//	public List<RegisteredCourse> viewRegisterCourses(String studentId);
+	public List<RegisteredCourse> viewRegisterCourses(String studentId);
 //	public List<Grades> viewGrades(String studentId);
-	public void viewRegisterCourses(String studentId);
+//	public List<RegisteredCourse> viewRegisterCourses(String studentId);
 	public void viewGrades(String studentId);
-	public double getFees(String studentId);
+	public List<Course> getFees(String studentId);
 	public void payFeesByCard(OnlinePayment onp, Payment p);
 	public void payFeesByNetBanking(OnlinePayment onp, Payment p);
 	public void payFeesByCash(OfflinePayment ofp, Payment p);

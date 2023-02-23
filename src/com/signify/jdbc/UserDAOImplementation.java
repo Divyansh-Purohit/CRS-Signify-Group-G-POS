@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.signify.constants.SQLConstants;
 import com.signify.jdbc.UserDAOInterface;
 import java.util.Scanner;
 public class UserDAOImplementation implements UserDAOInterface{
@@ -20,10 +22,10 @@ public class UserDAOImplementation implements UserDAOInterface{
 		try{
 			   
 			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
-			   String sql="select userid, roleid from user where username="+"\""+username+"\""+" and password="+"\""+password+"\"";
-			   stmt = conn.prepareStatement(sql);			   
-			   
-			   ResultSet rs = stmt.executeQuery(sql);
+			   stmt = conn.prepareStatement(SQLConstants.LOGIN_USER);
+			   stmt.setString(1, username);
+			   stmt.setString(2, password);
+			   ResultSet rs = stmt.executeQuery();
 			   
 			   while(rs.next())
 			   {
@@ -64,16 +66,14 @@ public class UserDAOImplementation implements UserDAOInterface{
     
     try {
         conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-        String sqlSelect = "SELECT COUNT(*) FROM user WHERE username=? AND password=?";
-        stmtSelect = conn.prepareStatement(sqlSelect);
+        stmtSelect = conn.prepareStatement(SQLConstants.VIEW_USER);
         stmtSelect.setString(1, username);
         stmtSelect.setString(2, oldPassword);
         rs = stmtSelect.executeQuery();
         rs.next();
         int count = rs.getInt(1);
         if (count == 1) {
-            String sqlUpdate = "UPDATE user SET password=? WHERE username=?";
-            stmtUpdate = conn.prepareStatement(sqlUpdate);
+            stmtUpdate = conn.prepareStatement(SQLConstants.UPDATE_PASSWORD);
             stmtUpdate.setString(1, newPassword);
             stmtUpdate.setString(2, username);
             int rowsAffected = stmtUpdate.executeUpdate();

@@ -186,7 +186,7 @@ public class CRSAdminApplicationMenu {
 					System.out.println("Professor Id\tProfesssor Name\t\tDepartment\tDesignation\tCourse Taught\n");
 					for(Professor x: p)
 					{
-						System.out.println(x.getUserId()+"\t"+x.getName()+"\t"+x.getDepartment()+"\t"+x.getDesignation()+x.getCourseTaught());
+						System.out.println(x.getUserId()+"\t"+x.getName()+"\t"+x.getDepartment()+"\t"+x.getDesignation()+"\t"+x.getCourseTaught());
 					}
 					System.out.println();
 					break;

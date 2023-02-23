@@ -1,11 +1,7 @@
 package com.signify.service;
-import com.signify.collection.UserData;
 import com.signify.helper.*;
 import com.signify.jdbc.StudentDAOImplementation;
 import com.signify.bean.*;
-import helper.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -43,14 +39,8 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 	}
 
 
-	public void viewRegisterCourses(String studentid) {
-		List<RegisteredCourse> rcourses = sdi.viewRegisteredCourses(studentid);
-		System.out.println("Course_Code\tCourse_Name\tSemester\tType");
-		System.out.println("=================================================");
-		for (RegisteredCourse x : rcourses) {
-			System.out.println(x.getCourseCode() + "\t" + x.getCourseName() + "\t" + x.getSemester() + "\t" + x.getType());
-		}
-		System.out.println();
+	public List<RegisteredCourse> viewRegisterCourses(String studentid) {
+		return sdi.viewRegisteredCourses(studentid);
 	}
 	
 
@@ -69,9 +59,9 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 		sdi.dropCourse(studentid, courseId);
 	}
 
-	public double getFees(String studentid)
+	public List<Course> getFees(String studentid)
 	{
-		return 0.0;
+		return sdi.getFees(studentid);
 	}
 	
 	public void payFeesByCash(OfflinePayment ofp, Payment p)

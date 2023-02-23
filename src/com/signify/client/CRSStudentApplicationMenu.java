@@ -29,29 +29,25 @@ public class CRSStudentApplicationMenu {
 				}
 				case 2:
 				{
-//					System.out.println("\nCourse Code\tCourse Name\tGrade Obtained\n");
-//					List<Grades> grades = ss.viewGrades(studentid);
-//					for(Grades x: grades)
-//					{
-//						System.out.println(x.getCourseCode()+"\t"+x.getCourseName()+"\t"+x.getGrade());
-//					}
 					ss.viewGrades(studentid);
+					System.out.println();
 					break;
 				}
 				case 3:
 				{
-					System.out.println("\nCourse Code\tCourse Name\tSemester\n");
-//					List<RegisteredCourse> rc = ss.viewRegisterCourses(studentid);
-//					for(RegisteredCourse x: rc)
-//					{
-//						System.out.println(x.getCourseCode()+"\t"+x.getCourseName()+"\t"+x.getSemester());
-//					}
-					ss.viewRegisterCourses(studentid);
+					System.out.println("\nCourse Code\tCourse Name\tSemester\tType\n");
+					List<RegisteredCourse> rc = ss.viewRegisterCourses(studentid);
+					for(RegisteredCourse x: rc)
+					{
+						System.out.println(x.getCourseCode()+"\t"+x.getCourseName()+"\t"+x.getSemester());
+					}
+					System.out.println();
 					break;
 				}
 				case 4:
 				{
 					List<Course> ac = ss.getAvailableCourses();
+					System.out.println("\nList of Available Courses\n");
 					System.out.println("Course_Code  Course_Name  Course_Instructor  Seats");
 					System.out.println("=================================================");
 					for (Course x : ac) {
@@ -60,6 +56,7 @@ public class CRSStudentApplicationMenu {
 								x.getCourseCode() + "\t" + x.getName() + "\t" + x.getInstructor() + "\t" + seatsAvailable);
 					}
 					System.out.println();
+					sc.nextLine();
 					System.out.print("Enter Course Code: ");
 					String courseCode = sc.nextLine();
 					System.out.print("Enter Type: ");
@@ -69,13 +66,13 @@ public class CRSStudentApplicationMenu {
 				}
 				case 5:
 				{
-//					System.out.println("\nCourse Code\tCourse Name\tSemester\n");
-//					List<RegisteredCourse> rc = ss.viewRegisterCourses(studentid);
-//					for(RegisteredCourse x: rc)
-//					{
-//						System.out.println(x.getCourseCode()+"\t"+x.getCourseName()+"\t"+x.getSemester());
-//					}
-					ss.viewRegisterCourses(studentid);					
+					System.out.println("\nCourse Code\tCourse Name\tSemester\n");
+					List<RegisteredCourse> rc = ss.viewRegisterCourses(studentid);
+					for(RegisteredCourse x: rc)
+					{
+						System.out.println(x.getCourseCode()+"\t"+x.getCourseName()+"\t"+x.getSemester());
+					}
+						
 					System.out.print("\nEnter Course Id: ");
 					sc.nextLine();
 					String courseId = sc.nextLine();
@@ -85,7 +82,15 @@ public class CRSStudentApplicationMenu {
 				case 6:
 				{
 					String referencedId;
-					ss.getFees(studentid); 
+					List<Course> courses= ss.getFees(studentid);
+					double totalFee = 0;
+					for(Course x: courses)
+					{
+						totalFee += x.getFee();
+					}
+					
+					System.out.println("\nTOTAL FEES TO BE PAID: "+totalFee+"\n");
+					
 					while(true)
 					{
 						System.out.println("\nPRESS 1 FOR ONLINE PAYMENT\nPRESS 2 FOR OFFLINE PAYMENT\nPRESS 3 IF SCHOLARSHIP RECEIVED\n");

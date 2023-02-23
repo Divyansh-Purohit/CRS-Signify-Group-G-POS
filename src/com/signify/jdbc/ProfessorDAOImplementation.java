@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.signify.bean.Student;
+import com.signify.constants.SQLConstants;
 
 public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 
@@ -18,8 +19,7 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select studentid from registeredcourse inner join professor on registeredcourse.coursecode = professor.course where professorid = ?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.VIEW_ENROLLED);
 			stmt.setString(1, professorId);
 			ResultSet rs = stmt.executeQuery();
 
@@ -52,7 +52,7 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 	}
 
 	@Override
-	public void addGrades(String professorId, String studentId, String grade) {
+	public void addGrades(String professorId, String studentid, String grade) {
 		String coursecode = "";
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -63,9 +63,7 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select course from professor where professorid = ?";
-			
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_COURSE);
 			stmt.setString(1, professorId);
 			ResultSet rs = stmt.executeQuery();
 			
@@ -75,11 +73,9 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 			
 			rs.close();
 			stmt.close();
-			
-			String sql_grade = "update registeredcourse set grade = ? where studentId = ? and courseCode = ?";
-			stmt_s = conn.prepareStatement(sql_grade);
+			stmt_s = conn.prepareStatement(SQLConstants.ADD_GRADES);
 			stmt_s.setString(1, grade);
-			stmt_s.setString(2, studentId);
+			stmt_s.setString(2, studentid);
 			stmt_s.setString(3, coursecode);
 			stmt_s.executeUpdate();
 			stmt_s.close();

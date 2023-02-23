@@ -2,9 +2,10 @@
  * 
  */
 package com.signify.jdbc;
-
 import com.signify.exception.*;
 import com.signify.bean.*;
+import com.signify.constants.SQLConstants;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -26,9 +27,8 @@ public class AdminDAOImplementation {
 		
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "insert into user (userid, username, password, address, doj, roleid) values(?,?,?,?,?,?)";
-
-			stmt = conn.prepareStatement(sql);
+			
+			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, newAdmin.getUserId());
 			stmt.setString(2, newAdmin.getName());
 			stmt.setString(3, newAdmin.getPassword());
@@ -38,8 +38,7 @@ public class AdminDAOImplementation {
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_admin = "insert into admin values(?,?)";
-			stmt_admin = conn.prepareStatement(sql_admin);
+			stmt_admin = conn.prepareStatement(SQLConstants.REGISTER_ADMIN);
 			stmt_admin.setString(1, newAdmin.getUserId());
 			stmt_admin.setString(2, newAdmin.getName());
 			stmt_admin.executeUpdate();
@@ -74,7 +73,7 @@ public class AdminDAOImplementation {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 
 			String sql = "insert into user (userid, username, password, address, doj, roleid) values(?,?,?,?,?,?)";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, p.getUserId());
 			stmt.setString(2, p.getName());
 			stmt.setString(3, p.getPassword());
@@ -84,8 +83,7 @@ public class AdminDAOImplementation {
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_professor = "insert into professor values(?,?,?,?,?)";
-			stmt_professor = conn.prepareStatement(sql_professor);
+			stmt_professor = conn.prepareStatement(SQLConstants.REGISTER_PROFESSOR);
 			stmt_professor.setString(1, p.getUserId());
 			stmt_professor.setString(2, p.getName());
 			stmt_professor.setString(3, p.getDepartment());
@@ -121,8 +119,7 @@ public class AdminDAOImplementation {
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 
-			String sql = "insert into catalog (coursecode, coursename, numstudents, instructor, coursefee) values(?,?,?,?,?)";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.INSERT_COURSEINCATALOG);
 			stmt.setString(1, c.getCourseCode());
 			stmt.setString(2, c.getName());
 			stmt.setInt(3, c.getNumStudents());
@@ -131,8 +128,7 @@ public class AdminDAOImplementation {
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_professor = "update professor set course = ? where professorid = ?";
-			stmt_professor = conn.prepareStatement(sql_professor);
+			stmt_professor = conn.prepareStatement(SQLConstants.UPDATE_COURSEOF_PROFESSOR);
 			stmt_professor.setString(1, c.getCourseCode());
 			stmt_professor.setString(2, c.getInstructor());
 			stmt_professor.executeUpdate();
@@ -163,8 +159,7 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "delete from catalog where coursecode=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.REMOVE_COURSE_FROM_CATALOG);
 			stmt.setString(1, coursecode);
 			stmt.executeUpdate();
 			stmt.close();
@@ -195,15 +190,13 @@ public class AdminDAOImplementation {
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 
-			String sql = "update professor set course=? where professorid=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.UPDATE_COURSEOF_PROFESSOR);
 			stmt.setString(1, courseCode);
 			stmt.setString(2, professorid);
 			stmt.executeUpdate();
 			stmt.close();
 
-			String sql_course = "update catalog set instructor=? where coursecode=?";
-			stmt_course = conn.prepareStatement(sql_course);
+			stmt_course = conn.prepareStatement(SQLConstants.UPDATE_PROFESSORIN_CATALOG);
 			stmt_course.setString(1, professorid);
 			stmt_course.setString(2, courseCode);
 			stmt_course.close();
@@ -235,8 +228,7 @@ public class AdminDAOImplementation {
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 
-			String sql = "select * from catalog where coursecode = ?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_CATALOG_WITH_COURSECODE);
 			stmt.setString(1, courseCode);
 			ResultSet rs = stmt.executeQuery();
 
@@ -277,9 +269,8 @@ public class AdminDAOImplementation {
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 
-			String sql = "select * from catalog";
-			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_CATALOG);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				Course c = new Course();
@@ -319,8 +310,7 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select u.userid as user_id, u.username as username, s.studentid as student_id from user u inner join Student s on u.userid = s.userid where s.isapproved=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_UNAPPROVED);
 			stmt.setInt(1, 0);
 			ResultSet rs = stmt.executeQuery();
 
@@ -361,8 +351,7 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "update student set isapproved=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SET_ALLAPPROVED);
 			stmt.setInt(1, 1);
 			stmt.executeUpdate();
 			stmt.close();
@@ -394,9 +383,9 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "update student set isapproved=1 where studentid = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, studentid);
+			stmt = conn.prepareStatement(SQLConstants.SET_APPROVEDBYID);
+			stmt.setInt(1, 1);
+			stmt.setString(2, studentid);
 			stmt.executeUpdate();
 			stmt.close();
 			conn.close();
@@ -428,10 +417,9 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select * from admin";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_ADMINS);
 
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				Admin a = new Admin();
@@ -470,10 +458,9 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select * from professor";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_PROFESSORS);
 
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				
@@ -520,11 +507,10 @@ public class AdminDAOImplementation {
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select grade from registeredcourse where studentId=?";
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareStatement(SQLConstants.SELECT_GRADES);
 			stmt.setString(1, studentid);
 
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				grade = rs.getString("grade");

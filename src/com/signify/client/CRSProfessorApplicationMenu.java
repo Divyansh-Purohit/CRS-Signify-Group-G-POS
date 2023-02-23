@@ -36,12 +36,12 @@ public class CRSProfessorApplicationMenu {
 				}
 				case 2:
 				{
+					sc.nextLine();
 					System.out.print("Enter Student Id: ");
 					String studentid = sc.nextLine();
-					sc.nextLine();
-					System.out.println("Enter Grade: ");
+					System.out.print("Enter Grade: ");
 					String grade = sc.nextLine();
-					ps.addGrades(professorId, studentid, grade);
+					System.out.println("NGG"+studentid+""+grade);
 					System.out.println("\nSTUDENT HAS BEEN GRADED!\n");
 					break;
 				}
