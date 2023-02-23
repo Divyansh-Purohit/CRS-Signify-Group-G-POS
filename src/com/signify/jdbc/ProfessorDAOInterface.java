@@ -4,8 +4,8 @@ import java.util.List;
 import com.signify.bean.Student;
 
 public interface ProfessorDAOInterface {
-	public List<Integer> viewEnrolledStudents(int professorId);
+	public List<Student> viewEnrolledStudents(String professorId);
 	
-	public void addGrades(int professorId , int studentId , String grade);
+	public void addGrades(String professorId , String studentId , String grade);
 
 }

@@ -10,20 +10,23 @@ import com.signify.bean.Student;
 
 public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 
-	@Override
-	public List<Integer> viewEnrolledStudents(int professorId) {
+
+	public List<Student> viewEnrolledStudents(String professorId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		List<Integer> students = new ArrayList<Integer>();
+		List<Student> students = new ArrayList<Student>();
 		try {
 
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			String sql = "select * from registeredcourse inner join professor on registeredcourse.courseCode = professor.course where professorid = "+ professorId;
+			String sql = "select studentid from registeredcourse inner join professor on registeredcourse.coursecode = professor.course where professorid = ?";
 			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, professorId);
 			ResultSet rs = stmt.executeQuery();
-			Student st = new Student();
+
 			while (rs.next()) {
-				students.add(rs.getInt("studentId"));
+				Student s = new Student();
+				s.setStudentId(rs.getString("studentid"));
+				students.add(s);
 			}
 
 			rs.close();
@@ -45,12 +48,11 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 			} finally {
 			}
 		}
-		
 		return students;
 	}
 
 	@Override
-	public void addGrades(int professorId, int studentId, String grade) {
+	public void addGrades(String professorId, String studentId, String grade) {
 		String coursecode = "";
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -62,12 +64,11 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 			String sql = "select course from professor where professorid = ?";
-			String sql_grade = "update registeredcourse set grade = ? where studentId = ? and courseCode = ?";
+			
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, professorId);
+			stmt.setString(1, professorId);
 			ResultSet rs = stmt.executeQuery();
 			
-			stmt_s = conn.prepareStatement(sql_grade);
 			while(rs.next()) {
 				coursecode = rs.getString("course");
 			}
@@ -75,8 +76,10 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 			rs.close();
 			stmt.close();
 			
+			String sql_grade = "update registeredcourse set grade = ? where studentId = ? and courseCode = ?";
+			stmt_s = conn.prepareStatement(sql_grade);
 			stmt_s.setString(1, grade);
-			stmt_s.setInt(2, studentId);
+			stmt_s.setString(2, studentId);
 			stmt_s.setString(3, coursecode);
 			stmt_s.executeUpdate();
 			stmt_s.close();

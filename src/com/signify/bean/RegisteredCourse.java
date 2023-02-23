@@ -1,14 +1,14 @@
 package com.signify.bean;
 public class RegisteredCourse{
 	
-	int semester;
-	private String grade, courseCode, name;
+	int semester, type;
+	private String courseCode, courseName;
 
-	public String getName() {
-		return name;
+	public String getCourseName() {
+		return courseName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setCourseName(String name) {
+		this.courseName = name;
 	}
 	public String getCourseCode() {
 		return courseCode;
@@ -22,10 +22,10 @@ public class RegisteredCourse{
 	public void setSemester(int semester) {
 		this.semester = semester;
 	}
-	public String getGrade() {
-		return grade;
+	public int getType() {
+		return type;
 	}
-	public void setGrade(String grade) {
-		this.grade = grade;
+	public void setType(int type) {
+		this.type = type;
 	}
 }

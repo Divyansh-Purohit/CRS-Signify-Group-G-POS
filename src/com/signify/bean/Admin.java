@@ -1,14 +1,13 @@
 package com.signify.bean;
 import java.time.LocalDate;
 public class Admin extends User {
-	private LocalDate doj;
+	private String adminName;
 
-	public LocalDate getDoj() {
-		return doj;
+	public String getAdminName() {
+		return adminName;
 	}
 
-	public void setDoj(LocalDate doj) {
-		this.doj = doj;
-	}
-	
+	public void setAdminName(String adminName) {
+		this.adminName = adminName;
+	}	
 }

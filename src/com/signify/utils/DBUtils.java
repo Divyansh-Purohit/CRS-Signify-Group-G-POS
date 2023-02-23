@@ -1,7 +1,5 @@
-/**
- * 
- */
 package com.signify.utils;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +7,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-/**
- * @author dp201
- *
- */
+
 public class DBUtils {
 	
 	private static Connection connection = null;
-
+	
 	public static Connection getConnection() {
 		
         if (connection != null)
@@ -24,8 +19,7 @@ public class DBUtils {
         else {
             try {
             	Properties prop = new Properties();
-                InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("/config.properties");
-                //place the database configurations
+                InputStream inputStream = DBUtils.class.getClassLoader().getResourceAsStream("./config.properties");
                 prop.load(inputStream);
                 String driver = prop.getProperty("driver");
                 String url = prop.getProperty("url");
@@ -46,5 +40,4 @@ public class DBUtils {
         }
 
     }
-
 }

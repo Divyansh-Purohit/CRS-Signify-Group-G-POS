@@ -1,17 +1,20 @@
 package com.signify.bean;
 public class Payment {
 	
-//	attributes here!
-	private int studentId;
-	private String referencedId;
+	private String studentId, referencedId, mode;
 	private float amount;
-	private boolean status;
+	private int status;
 	
-//	setters and getters here!
-	public int getStudentId() {
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public String getStudentId() {
 		return studentId;
 	}
-	public void setStudentId(int studentId) {
+	public void setStudentId(String studentId) {
 		this.studentId = studentId;
 	}
 	public String getReferencedId() {
@@ -26,10 +29,10 @@ public class Payment {
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
-	public boolean isStatus() {
+	public int isStatus() {
 		return status;
 	}
-	public void setStatus(boolean status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 }

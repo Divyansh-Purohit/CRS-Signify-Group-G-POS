@@ -1,21 +1,23 @@
 /**
  * 
  */
-package com.signify.jdbc;
-
+package com.signify.jdbc;  
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.*;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.UUID;
-
 import com.signify.bean.Course;
 import com.signify.bean.Grades;
+import com.signify.bean.OfflinePayment;
+import com.signify.bean.OnlinePayment;
+import com.signify.bean.Payment;
+import com.signify.bean.RegisteredCourse;
+import com.signify.bean.Student;
 import com.signify.constants.SQLConstants;
 import com.signify.utils.DBUtils;
 
@@ -23,56 +25,43 @@ import com.signify.utils.DBUtils;
  * @author dp201
  *
  */
-public class StudentDAOImplementation implements StudentDAOInterface, StudentPaymentInterface {
+public class StudentDAOImplementation implements StudentDAOInterface {
 
-	
-	private Connection conn; 
-	
-	public void register(String username, String password, String address, int sem, String branch, String batch, String bg, String fname, String phnum, String doj) {
-		
-		int user_id = -1;
+	public void register(Student student) {
+
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		PreparedStatement stmt_id = null;
 		PreparedStatement stmt_student = null;
-
 		try {
-
-			conn = DBUtils.getConnection();
-			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER); 
-			stmt.setString(1, username);
-			stmt.setString(2, password);
-			stmt.setString(3, address);
-			stmt.setDate(4, Date.valueOf(doj));
-			stmt.setInt(5, 1);
+			
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
+			String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			stmt.setString(1, student.getUserId());
+			stmt.setString(2, student.getName());
+			stmt.setString(3, student.getPassword());
+			stmt.setString(4, student.getAddress());
+			stmt.setDate(5, Date.valueOf(doj));
+			stmt.setInt(6, 1);
 			stmt.executeUpdate();
 			stmt.close();
-			
-			stmt_id = conn.prepareStatement(SQLConstants.GET_USER_ID);
-			stmt_id.setString(1, username);
-			stmt_id.setString(2,  password);
-			ResultSet rs = stmt_id.executeQuery();
-			while (rs.next()) {
-				user_id = rs.getInt("userid");
-			}
-			rs.close();
-			stmt_id.close();
-			
-			String sql_student = "insert into student(userid, studentname, semester, branch, batch, bloodgroup, fathername, phone, isapproved, numcourses) values(?,?,?,?,?,?,?,?,?,?)";
+
+			String sql_student = "insert into student(userid, studentid, studentname, branch, age, bloodgroup, fname, phnum, isapproved, numcourses) values(?,?,?,?,?,?,?,?,?,?)";
 			stmt_student = conn.prepareStatement(sql_student);
-			stmt_student.setInt(1, user_id);
-			stmt_student.setString(2, username);
-			stmt_student.setInt(3, sem);
-			stmt_student.setString(4, branch);
-			stmt_student.setString(5, batch);
-			stmt_student.setString(6, bg);
-			stmt_student.setString(7, fname);
-			stmt_student.setString(8, phnum);
+			stmt_student.setString(1, student.getUserId());
+			stmt_student.setString(2, student.getStudentId());
+			stmt_student.setString(3, student.getName());
+			stmt_student.setString(4, student.getBranch());
+			stmt_student.setInt(5, student.getAge());
+			stmt_student.setString(6, student.getBloodgroup());
+			stmt_student.setString(7, student.getFname());
+			stmt_student.setString(8, student.getPhnum());
 			stmt_student.setInt(9, 0);
 			stmt_student.setInt(10, 0);
 			stmt_student.executeUpdate();
 			stmt_student.close();
 			conn.close();
-			
+
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
@@ -91,20 +80,20 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 			}
 		}
 	}
-	
-	public int getStudentId(int userId)
-	{
+
+	public String getStudentId(String userid) {
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		int student_id = 0;
-		
+		String student_id = "";
+
 		try {
-			conn = DBUtils.getConnection();	
-			String sql = "select studentid from student where userid=?";			
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			String sql = "select studentid from student where userid=?";
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, userId);
+			stmt.setString(1, userid);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				student_id = rs.getInt("studentid");
+				student_id = rs.getString("studentid");
 			}
 			rs.close();
 			stmt.close();
@@ -131,19 +120,17 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 		return student_id;
 	}
 
-	public int getIsApprovedStatus(int student_id)
-	{
-		
+	public int getIsApprovedStatus(String studentid) {
+
+		Connection conn = null;
 		PreparedStatement stmt = null;
 		int isapproved = 0;
-		
 
 		try {
-			
-			conn = DBUtils.getConnection();
-			String sql = "select isapproved from student where studentid=?";			
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			String sql = "select isapproved from student where studentid=?";
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, student_id);
+			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				isapproved = rs.getInt("isapproved");
@@ -169,18 +156,17 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 				se.printStackTrace();
 			}
 		}
-		System.out.println(isapproved);
 		return isapproved;
 	}
-	
-	public List<Course> getAvailableCourses()
-	{
+
+	public List<Course> getAvailableCourses() {
+		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Course> ac = new ArrayList<Course>();
-		
+
 		try {
 
-			conn = DBUtils.getConnection();
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 			String sql = "select coursecode, coursename, instructor, numstudents from catalog where numstudents < 10";
 			stmt = conn.prepareStatement(sql);
 
@@ -189,9 +175,8 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 				Course c = new Course();
 				c.setCourseCode(rs.getString("coursecode"));
 				c.setName(rs.getString("coursename"));
-				c.setInstructor(rs.getInt("instructor"));
-				c.setSeatsAvailable(rs.getInt("numstudents"));
-				c.setSeatsAvailable(10-c.getSeatsAvailable());
+				c.setInstructor(rs.getString("instructor"));
+				c.setNumStudents(rs.getInt("numstudents"));
 				ac.add(c);
 			}
 			rs.close();
@@ -217,34 +202,31 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 		}
 		return ac;
 	}
-	
-	public void addCourse(int student_id, String courseCode, int type)
-	{
-		
+
+	public void addCourse(String studentid, String courseCode, int type) {
+		Connection conn = null;
 		PreparedStatement stmt_1 = null;
 		PreparedStatement stmt_2 = null;
 		PreparedStatement stmt_3 = null;
 		int num = -1, sem = -1;
-		
-		try {
-			
-			
-			conn = DBUtils.getConnection();
-//			String sql_1 = "select semester, numcourses from catalog where studentid = ? and coursecode = ?";
-			String sql_1 = "insert into registeredcourse values(?,?,?,?,?)";
-			stmt_1 = conn.prepareStatement(sql_1);
-			stmt_1.setString(1, courseCode);
-			stmt_1.setInt(2, 8);
-			stmt_1.setInt(3, student_id);
-			stmt_1.setString(4, "NA");
-			stmt_1.setInt(5, 1);
-			stmt_1.execute();
+
+//		try {
+//
+//			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+//			String sql_1 = "insert into registeredcourse values(?,?,?,?,?)";
+//			stmt_1 = conn.prepareStatement(sql_1);
+//			stmt_1.setString(1, courseCode);
+//			stmt_1.setInt(2, 8);
+//			stmt_1.setString(3, studentid);
+//			stmt_1.setString(4, "NA");
+//			stmt_1.setInt(5, 1);
+//			stmt_1.execute();
 //			while(rs.next())
 //			{
 //				num = rs.getInt("numcourses");
 //				sem = rs.getInt("semester");
 //			}
-			
+//
 //			if(num > 4 && type == 1)
 //			{
 //				System.out.println("\nYou cannot register for more courses of current type!\n");
@@ -256,7 +238,7 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 //				System.out.println("\nYou cannot register for more courses of current type!\n");
 //				return;
 //			}
-////			
+//////			
 //			String sql_2 = "insert into registeredcourse (coursecode, semester, studentId, grade, type) values(?,?,?,?,?)";
 //			stmt_2 = conn.prepareStatement(sql_2);
 //			stmt_2.setString(1, courseCode);
@@ -271,52 +253,50 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 //			String sql_3 = "update student set numcourses = numcourses+1 where studentid =" + student_id;
 //			stmt_3 = conn.prepareStatement(sql_3);			
 //			stmt_3.execute(sql_3);
+//			stmt_1.close();
+//			conn.close();
+//
+//		} catch (SQLException se) {
+//			se.printStackTrace();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				if (stmt_1 != null)
+//					stmt_1.close();
+//			} catch (SQLException se2) {
+//			}
+//			try {
+//				if (conn != null)
+//					conn.close();
+//			} catch (SQLException se) {
+//				se.printStackTrace();
+//			}
+//		}
+
+	}
+
+	public void dropCourse(String studentid, String courseId) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		PreparedStatement stmt_1 = null;
+		try {
+
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.DELETE_USER_COURSE);
+			stmt.setString(1, courseId);
+			stmt.setString(2, studentid);
+			stmt.executeUpdate();
+			stmt.close();
+
+			String sql_1 = "update catalog SET numstudents=numstudents-1 WHERE coursecode=" + courseId;
+			stmt_1 = conn.prepareStatement(SQLConstants.UPADTE_CATALOG_AFTER_STUDENT);
+			stmt_1.setString(1, studentid);
+			stmt_1.executeUpdate();
 			stmt_1.close();
 			conn.close();
 
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt_1 != null)
-					stmt_1.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
-		}
-
-	}
-	
-	public void dropCourse(int studentId, String courseId)
-	{
-		PreparedStatement stmt = null;
-		PreparedStatement stmt_1 = null;		
-		
-		try{
-			   
-			   conn = DBUtils.getConnection();
-			   String sql="DELETE FROM registeredcourses where courseCode="+courseId+"and studentId="+studentId;
-			   stmt = conn.prepareStatement(sql);
-			   ResultSet rs = stmt.executeQuery(sql);
-			   rs.close();
-			   stmt.close();  
-			   
-			   String sql_1="update catalog SET numstudents=numstudents-1 WHERE coursecode="+courseId;
-			   stmt_1 = conn.prepareStatement(sql_1);
-			   ResultSet rs_1 = stmt_1.executeQuery(sql_1);			   
-			   rs_1.close();
-			   stmt_1.close();
-			   conn.close();
-			     			      
-			}
-		catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -333,31 +313,32 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 				se.printStackTrace();
 			}
 		}
-		
+
 	}
 
-	public List<Grades> viewGrades(int student_id)
-	{
+	public List<Grades> viewGrades(String studentid) {
+		
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		List<Grades> grades = new ArrayList<Grades>(); 
+		List<Grades> grades = new ArrayList<Grades>();
 		try {
 
-			conn = DBUtils.getConnection();
-			String sql = "select rc.courseCode as coursecode, cat.coursename as coursename, rc.grade from registeredcourse rc natural join catalog cat where rc.studentId="	+ student_id  + " and type = 1";
-			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.VIEW_GRADES);
+			stmt.setString(1, studentid);
+			ResultSet rs = stmt.executeQuery();
 			if (rs == null) {
-				System.out.println("\nNo courses found!\n");
+				System.out.println("\nNO COURSES FOUND!\n");
 			} else {
 				while (rs.next()) {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
 					String grade = rs.getString("grade");
-
+					System.out.println(cc+" "+cn+" "+grade);
 					Grades g = new Grades();
 					g.setCourseCode(cc);
 					g.setCourseName(cn);
-					g.setGrade(grade);		
+					g.setGrade(grade);
 					grades.add(g);
 				}
 			}
@@ -386,76 +367,29 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 		return grades;
 	}
 
-	public String[] viewGrade(int studentId, String courseCode)
-	{		
+	public List<RegisteredCourse> viewRegisteredCourses(String studentid) {
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		String[] arr = new String[4]; 
+		List<RegisteredCourse> rcourses = new ArrayList<RegisteredCourse>();
 		try {
 
-			conn = DBUtils.getConnection();
-			String sql = "select rc.courseCode as coursecode, cat.instructor as instructor, cat.coursename as coursename, rc.grade from registeredcourse rc natural join catalog cat where rc.studentId="	+ studentId  + " and type = 1 and cat.courseCode = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, courseCode);
-			ResultSet rs = stmt.executeQuery(sql);
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.VIEW_REGISTERED_COURSES);
+			stmt.setString(1, studentid);
+			ResultSet rs = stmt.executeQuery();
 			if (rs == null) {
-				System.out.println("\nNo course found!\n");
-			} else {
-				while (rs.next()) {
-					arr[0] = rs.getString("coursecode");
-					arr[1] = rs.getString("coursename");
-					arr[2] = String.valueOf(rs.getInt("instructor"));
-					arr[3] = rs.getString("grade");
-				}
-			}
-
-			rs.close();
-			stmt.close();
-			conn.close();
-
-		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
-		}
-		return arr;
-	}
-
-	public List<Course> viewRegisteredCourses(int studentId) 
-	{	
-		PreparedStatement stmt = null;
-		List<Course> rcourses = new ArrayList<Course>(); 
-		try {
-
-			conn = DBUtils.getConnection();
-			String sql = "select rc.courseCode, cat.coursename as coursename, cat.instructor as instructor, rc.type as type from registeredcourse rc natural join catalog cat where rc.studentId="+studentId;
-			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			if (rs == null) {
-				System.out.println("\nNo courses found!\n");
+				System.out.println("\nNO COURSES FOUND!\n");
 			} else {
 				while (rs.next()) {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
+//					double cf = rs.getDouble("coursefee");
 					int type = rs.getInt("type");
-					int instructor = rs.getInt("instructor");
 					
-					Course c = new Course();
+					RegisteredCourse c = new RegisteredCourse();
 					c.setCourseCode(cc);
-					c.setName(cn);
+					c.setCourseName(cn);
 					c.setType(type);
-					c.setInstructor(instructor);
 					rcourses.add(c);
 				}
 			}
@@ -482,32 +416,35 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 		}
 		return rcourses;
 	}
-	public int getFees(int studentId) {
-		
+
+	public List<Course> getFees(String studentid) {
+		Connection conn = null;
 		PreparedStatement stmt = null;
-		int total = 0;
-
+//		int total = 0;
+		List<Course> courses = new ArrayList<Course>();
 		try {
-			conn = DBUtils.getConnection();
-			String sql = "select catalog.coursecode as coursecode , coursename , coursefee from registeredcourse inner join catalog on registeredcourse.coursecode = catalog.coursecode where studentId=\""
-					+ studentId + "\"";
-			stmt = conn.prepareStatement(sql);
-
-			ResultSet rs = stmt.executeQuery(sql);
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.GET_FEES);
+			stmt.setString(1, studentid);
+			ResultSet rs = stmt.executeQuery();
 			if (rs == null) {
-				System.out.println("No courses found!");
+				System.out.println("\nNO COURSES FOUND!\n");
 			} else {
-				System.out.println("Course Code\t CourseName\t Course fee");
+				System.out.println("\nCOURSE CODE\tCOURSE NAME\tCOURSE FEE\n");
 				while (rs.next()) {
 					String coursecode = rs.getString("coursecode");
 					String coursename = rs.getString("coursename");
-					Integer fee = rs.getInt("coursefee");
-					total += fee;
-					System.out.println(coursecode + "\t" + coursename + "\t" + fee);
+					int fee = rs.getInt("coursefee");
+//					total += fee;
+					Course c = new Course();
+					c.setCourseCode(coursecode);
+					c.setName(coursename);
+					c.setFee(fee);
+					courses.add(c);	
 				}
 			}
 
-			System.out.println("Total Fees : \t" + total + "\n");
+//			System.out.println("Total Fees : \t" + total + "\n");
 			rs.close();
 			stmt.close();
 			conn.close();
@@ -529,39 +466,34 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 				se.printStackTrace();
 			}
 		}
-		return total;
+		return courses;
 	}
 
 	@Override
-	public void payFeesByCard(Integer studentId, String cardNumber, String cardType, int amount) {
-		
+	public void payFeesByCard(OnlinePayment onp, Payment p) {
+		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
-
 		try {
-			conn = DBUtils.getConnection();
-			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
-			String sql_s = "insert into payment_online(referenceidfk , card , cardnumber , cardtype , modeoftransfer , accountnumber , ifscode) values(? , ? , ? , ? , ? , ? , ?)";
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CARD);
+			stmt.setString(1, p.getReferencedId());
+			stmt.setString(2, p.getStudentId());
+			stmt.setString(3, p.getMode());
+			stmt.setString(4, "PAID");
+			stmt.setDouble(5, p.getAmount());
 
-			stmt = conn.prepareStatement(sql);
-			String refId = UUID.randomUUID().toString();
-			stmt.setString(1, refId);
-			stmt.setInt(2, studentId);
-			stmt.setString(3, "online");
-			stmt.setString(4, "Paid");
-			stmt.setInt(5, amount);
-
-			stmt_s = conn.prepareStatement(sql_s);
-			stmt_s.setString(1, refId);
-			stmt_s.setInt(2, 1);
-			stmt_s.setString(3, cardNumber);
-			stmt_s.setString(4, cardType);
-			stmt_s.setString(5, "NA");
-			stmt_s.setString(6, "NA");
-			stmt_s.setString(7, "NA");
+			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CARD_ONLINE);
+			stmt_s.setString(1, onp.getReferencedId());
+			stmt_s.setInt(2, onp.getCard());
+			stmt_s.setString(3, onp.getCardNumber());
+			stmt_s.setString(4, onp.getCardType());
+			stmt_s.setString(5, onp.getModeOfTransfer());
+			stmt_s.setString(6, onp.getAccountNumber());
+			stmt_s.setString(7, onp.getIfscode());
 
 			stmt.executeUpdate();
 			stmt_s.execute();
-			System.out.println("Fee paid by CARD");
+			System.out.println("\nFEE PAID BY CARD\n");
 
 			stmt.close();
 			conn.close();
@@ -586,35 +518,32 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	}
 
 	@Override
-	public void payFeesByNetBanking(Integer studentId, String modeOfTransfer, String accountNumber, String ifscCode,
-			int amount) {
+	public void payFeesByNetBanking(OnlinePayment onp, Payment p)
+	{
+		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DBUtils.getConnection();
-			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
-			String sql_s = "insert into payment_online(referenceidfk , card , cardnumber , cardtype , modeoftransfer , accountnumber , ifscode) values(? , ? , ? , ? , ? , ? , ?)";
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.PAYMENT_NETBANK);
+			stmt.setString(1, p.getReferencedId());
+			stmt.setString(2, p.getStudentId());
+			stmt.setString(3, p.getMode());
+			stmt.setString(4, "PAID");
+			stmt.setDouble(5, p.getAmount());
 
-			stmt = conn.prepareStatement(sql);
-			String refId = UUID.randomUUID().toString();
-			stmt.setString(1, refId);
-			stmt.setInt(2, studentId);
-			stmt.setString(3, "online");
-			stmt.setString(4, "Paid");
-			stmt.setInt(5, amount);
-
-			stmt_s = conn.prepareStatement(sql_s);
-			stmt_s.setString(1, refId);
-			stmt_s.setInt(2, 0);
-			stmt_s.setString(3, "NA");
-			stmt_s.setString(4 , "NA");
-			stmt_s.setString(5 , modeOfTransfer);
-			stmt_s.setString(6, accountNumber);
-			stmt_s.setString(7, ifscCode);
+			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_NETBANK_ONLINE);
+			stmt_s.setString(1, onp.getReferencedId());
+			stmt_s.setInt(2, onp.getCard());
+			stmt_s.setString(3, onp.getCardNumber());
+			stmt_s.setString(4, onp.getCardType());
+			stmt_s.setString(5, onp.getModeOfTransfer());
+			stmt_s.setString(6, onp.getAccountNumber());
+			stmt_s.setString(7, onp.getIfscode());
 
 			stmt.executeUpdate();
 			stmt_s.execute();
-			System.out.println("Fee paid by NETBANKING");
+			System.out.println("\nFEE PAID BY NET BANKING\n");
 
 			stmt.close();
 			conn.close();
@@ -639,33 +568,29 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	}
 
 	@Override
-	public void payFeesByCheque(Integer studentId, String bankName, String chequeNumber, int amount) {
-		
+	public void payFeesByCheque(OfflinePayment ofp, Payment p) {
+		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
-		
+
 		try {
 
-			conn = DBUtils.getConnection();
-			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
-			String sql_s = "insert into payment_offline(referenceid , cash , chequenumber , bankname) values(? , ? , ? , ?)";
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CHEQUE);
+			stmt.setString(1, p.getReferencedId());
+			stmt.setString(2, p.getStudentId());
+			stmt.setString(3, p.getMode());
+			stmt.setString(4, "PAID");
+			stmt.setDouble(5, p.getAmount());
 
-			stmt = conn.prepareStatement(sql);
-			String refId = UUID.randomUUID().toString();
-			stmt.setString(1, refId);
-			stmt.setInt(2, studentId);
-			stmt.setString(3, "offline");
-			stmt.setString(4, "Paid");
-			stmt.setInt(5, amount);
-
-			stmt_s = conn.prepareStatement(sql_s);
-			stmt_s.setString(1, refId);
-			stmt_s.setInt(2, 0);
-			stmt_s.setString(3, chequeNumber);
-			stmt_s.setString(4, bankName);
+			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CHEQUE_OFFLINE);
+			stmt_s.setString(1, ofp.getReferencedId());
+			stmt_s.setInt(2, ofp.getCash());
+			stmt_s.setInt(3, ofp.getChequeNumber());
+			stmt_s.setString(4, ofp.getBankName());
 
 			stmt.executeUpdate();
 			stmt_s.execute();
-			System.out.println("Fee paid by CHEQUE");
+			System.out.println("\nFEE PAID BY CHEQUE\n");
 
 			stmt.close();
 			conn.close();
@@ -690,32 +615,29 @@ public class StudentDAOImplementation implements StudentDAOInterface, StudentPay
 	}
 
 	@Override
-	public void payFeesByCash(Integer studentId, int amount) {
-		
+	public void payFeesByCash(OfflinePayment ofp, Payment p) {
+
+		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DBUtils.getConnection();
-			String sql = "insert into payment(referenceid , studentidfk , modeofpayment , status , amount) values(? , ? , ? , ? , ?)";
-			String sql_s = "insert into payment_offline(referenceid , cash , chequenumber , bankname) values(? , ? , ? , ?)";
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CASH);
+			stmt.setString(1, p.getReferencedId());
+			stmt.setString(2, p.getStudentId());
+			stmt.setString(3, p.getMode());
+			stmt.setString(4, "PAID");
+			stmt.setDouble(5, p.getAmount());
 
-			stmt = conn.prepareStatement(sql);
-			String refId = UUID.randomUUID().toString();
-			stmt.setString(1, refId);
-			stmt.setInt(2, studentId);
-			stmt.setString(3, "offline");
-			stmt.setString(4, "Paid");
-			stmt.setInt(5, amount);
-
-			stmt_s = conn.prepareStatement(sql_s);
-			stmt_s.setString(1, refId);
-			stmt_s.setInt(2, 1);
-			stmt_s.setString(3, "NA");
-			stmt_s.setString(4, "NA");
+			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CASH_OFFLINE);
+			stmt_s.setString(1, ofp.getReferencedId());
+			stmt_s.setInt(2, ofp.getCash());
+			stmt_s.setInt(3, ofp.getChequeNumber());
+			stmt_s.setString(4, ofp.getBankName());
 
 			stmt.executeUpdate();
 			stmt_s.execute();
-			System.out.println("Fee paid by CASH");
+			System.out.println("\nFEE PAID BY CASH\n");
 
 			stmt.close();
 			conn.close();

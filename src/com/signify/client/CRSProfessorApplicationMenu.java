@@ -10,37 +10,39 @@ import java.util.*;
  */
 public class CRSProfessorApplicationMenu {
 
-	public void displayProfessorMenu(int professorId)
+	public void displayProfessorMenu(String professorId)
 	{
 		System.out.println("\nWELCOME TO PROFESSOR MENU");
 		System.out.println("=========================");
 		Scanner sc = new Scanner(System.in);
 		while(true)
 		{
-			System.out.println("PRESS 1 FOR VIEWING ENROLLED STUDENTS\nPRESS 2 TO ADD GRADES\nPRESS 3 TO LOGOUT");
+			System.out.println("PRESS 1 FOR VIEWING ENROLLED STUDENTS\nPRESS 2 TO ADD GRADES\nPRESS 3 TO LOGOUT\n");
 			int choice = sc.nextInt();
-//			ProfessorInterface ps = new ProfessorServiceOperation();
-			ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
+			ProfessorInterface ps = new ProfessorServiceOperation();
+//			ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 			switch(choice)
 			{
 				case 1:
 				{
-					System.out.println("Listing enrolled students...");
-					List<Integer> students = pdi.viewEnrolledStudents(professorId);
-					for (Integer i : students) {
-						System.out.println("Student id \t" + i);
+					System.out.println("\nLIST OF ENROLLED STUDENTS\n");
+					List<Student> students = ps.viewEnrolledStudents(professorId);
+					System.out.println("STUDENT ID");
+					for (Student i : students) {
+						System.out.println(i.getStudentid());
 					}
+					System.out.println();
 					break;
 				}
 				case 2:
 				{
 					System.out.print("Enter Student Id: ");
-					int sId = sc.nextInt();
+					String studentid = sc.nextLine();
 					sc.nextLine();
 					System.out.println("Enter Grade: ");
 					String grade = sc.nextLine();
-					pdi.addGrades(professorId, sId, grade);
-					System.out.println("Student Graded");
+					ps.addGrades(professorId, studentid, grade);
+					System.out.println("\nSTUDENT HAS BEEN GRADED!\n");
 					break;
 				}
 				case 3:
@@ -49,7 +51,7 @@ public class CRSProfessorApplicationMenu {
 				}
 				default:
 				{
-					System.out.println("\nInvalid Input Received!\n");
+					System.out.println("\nINVALID INPUT RECEIVED!\n");
 				}
 			}
 		}

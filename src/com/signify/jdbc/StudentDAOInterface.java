@@ -3,23 +3,26 @@ import com.signify.bean.*;
 import java.util.*;
 
 public interface StudentDAOInterface {
-	public void register(String username, String password, String address, int sem, String branch, String batch, String bg, String fname, String phnum, String doj);
+	public void register(Student student);
 	
-	public int getStudentId(int userId);
+	public String getStudentId(String userid);
 	
-	public int getIsApprovedStatus(int student_id);
+	public int getIsApprovedStatus(String studentid);
 	
 	public List<Course> getAvailableCourses();
 	
-	public void addCourse(int studentId, String courseCode, int type);
+	public void addCourse(String studentid, String courseCode, int type);
 	
-	public void dropCourse(int studentId, String courseCode);
+	public void dropCourse(String studentid, String courseCode);
 	
-	public List<Grades> viewGrades(int studentId);	
-	
-	public String[] viewGrade(int studentId, String courseCode);
+	public List<Grades> viewGrades(String studentid);	
 		
-	public List<Course> viewRegisteredCourses(int studentId);
+	public List<RegisteredCourse> viewRegisteredCourses(String studentid);
 		
-	public int getFees(int studentId);
+	public List<Course> getFees(String studentid);
+	
+	public void payFeesByCheque(OfflinePayment ofp, Payment p);
+	public void payFeesByCash(OfflinePayment ofp, Payment p);
+	public void payFeesByCard(OnlinePayment onp, Payment p);
+	public void payFeesByNetBanking(OnlinePayment onp, Payment p);
 }

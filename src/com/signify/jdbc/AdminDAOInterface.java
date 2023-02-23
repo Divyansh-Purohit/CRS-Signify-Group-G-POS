@@ -1,4 +1,12 @@
 package com.signify.jdbc;
+
+import java.util.List;
+
+import com.signify.bean.Admin;
+import com.signify.bean.Course;
+import com.signify.bean.Professor;
+import com.signify.bean.Student;
+
 /**
  * @author dp201
  *
@@ -6,26 +14,30 @@ package com.signify.jdbc;
 
 public interface AdminDAOInterface{
 
-	public void approveStudent();
+	public void approveAllStudents();
+	
+	public void approveStudentById();
+	
+	public List<Student> listOfUnapprovedStudents();
 		
-	public void addAdmin();
+	public void addAdmin(Admin a);
 	
-	public void viewAdmins();
+	public List<Admin> viewAdmins();
 	
-	public void viewProfessors();
+	public List<Professor> viewProfessors();
 	
-	public void addProfessor();
+	public void addProfessor(Professor p);
 	
-	public void assignProfessorToCourse(int professor_id, String courseCode);
+	public void assignProfessorToCourse(String professorid, String courseCode);
 	
-	public void addCourse();
+	public void addCourse(Course c);
 	
 	public void removeCourse(String courseCode);
 	
 	public void viewCourseDetails(String coursecode);
 	
-	public void calculateCpi(int studentid);
+	public void calculateCpi(String studentid);
 	
-	public void generateReportCard(int studentId);
+	public void generateReportCard(String studentId);
 	
 }

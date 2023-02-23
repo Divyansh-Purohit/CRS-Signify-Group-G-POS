@@ -13,19 +13,15 @@ import java.util.*;
  */
 public class ProfessorServiceOperation extends UserServiceOperation implements ProfessorInterface{
 	 
-	public void viewEnrolledStudents(int professorId)
+	public List<Student> viewEnrolledStudents(String professorId)
 	{
 		ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
-		List<Integer> es = pdi.viewEnrolledStudents(professorId);
-		System.out.println("\nStudent ID");
-		for(Integer x : es)
-		{
-			System.out.println(x);
-		}
-		System.out.println();
+		List<Student> es = pdi.viewEnrolledStudents(professorId);
+//		System.out.println(es.size());
+		return es;
 	}
 	
-	public void addGrades(int professorId, int StudentId, String grade)
+	public void addGrades(String professorId, String StudentId, String grade)
 	{
 		ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 		pdi.addGrades(professorId, StudentId, grade);

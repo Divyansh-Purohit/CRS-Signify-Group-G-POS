@@ -9,17 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.signify.jdbc.UserDAOInterface;
 import java.util.Scanner;
-
-/**
- * @author srish
- *
- */
-
 public class UserDAOImplementation implements UserDAOInterface{
-	public int[] login(String username, String password)
+	public String[] login(String username, String password)
 	{
-		int userid = -1;
-		int roleid = -1;
+		String userid = "";
+		String roleid = "";
 		Connection conn = null;
 		PreparedStatement stmt = null;
 				
@@ -33,8 +27,8 @@ public class UserDAOImplementation implements UserDAOInterface{
 			   
 			   while(rs.next())
 			   {
-			      userid = rs.getInt("userid");
-			      roleid = rs.getInt("roleid");
+			      userid = rs.getString("userid");
+			      roleid = Integer.toString(rs.getInt("roleid"));
 			   }
 			   
 			   rs.close();
@@ -58,7 +52,7 @@ public class UserDAOImplementation implements UserDAOInterface{
 			       se.printStackTrace();
 			    }
 		}
-		int[] ans = {roleid,userid};
+		String[] ans = {String.valueOf(roleid),userid};
 		return ans;
 	}
 	public boolean updatePassword(String username, String oldPassword, String newPassword) {

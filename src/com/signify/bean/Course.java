@@ -1,39 +1,33 @@
 package com.signify.bean;
-import java.util.*;
 public class Course {
-	private String courseCode, name;
-	private int instructor;
+	private String courseCode, name, instructor;
 	private boolean isOffered;
-	private int seatsAvailable;
+	private int numStudents, type;
+	private double fee;
+	
+	public double getFee() {
+		return fee;
+	}
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
 	public int getType() {
 		return type;
 	}
 	public void setType(int type) {
 		this.type = type;
 	}
-	private int type;
 	
-	public int getSeatsAvailable() {
-		return seatsAvailable;
-	}
-	public void setSeatsAvailable(int seatsAvailable) {
-		this.seatsAvailable = seatsAvailable;
-	}
-	private HashMap<Integer, String> enrolledStudents = new HashMap<Integer, String>();
-	
-	public int getNumStudents() {
+	public int getNumStudents()
+	{
 		return numStudents;
 	}
-	public HashMap<Integer, String> getEnrolledStudents() {
-		return enrolledStudents;
-	}
-	public void setEnrolledStudents(HashMap<Integer, String> eS) {
-		this.enrolledStudents = eS;
-	}
+		
 	public void setNumStudents(int numStudents) {
 		this.numStudents = numStudents;
 	}
-	private int numStudents;
+	
+	
 	public String getCourseCode() {
 		return courseCode;
 	}
@@ -46,11 +40,11 @@ public class Course {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getInstructor() {
+	public String getInstructor() {
 		return instructor;
 	}
-	public void setInstructor(int instructorId) {
-		this.instructor = instructorId;
+	public void setInstructor(String instructor) {
+		this.instructor = instructor;
 	}
 	public boolean isOffered() {
 		return isOffered;

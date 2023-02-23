@@ -1,9 +1,9 @@
 package com.signify.service;
+import java.util.List;
+import com.signify.bean.Student;
 
 public interface ProfessorInterface {
-	
-	public void viewEnrolledStudents(int professorId);
-	
-	public void addGrades(int professorId, int studentId, String grade);
+	public List<Student> viewEnrolledStudents(String professorId);
+	public void addGrades(String professorId, String studentId, String grade);
 
 }
