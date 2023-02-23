@@ -1,7 +1,8 @@
 /**
  * 
  */
-package com.signify.jdbc;  
+package com.signify.jdbc;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -33,7 +34,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_student = null;
 		try {
-			
+
 			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -202,74 +203,38 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 	public void addCourse(String studentid, String courseCode, int type) {
 		Connection conn = null;
-		PreparedStatement stmt_1 = null;
-		PreparedStatement stmt_2 = null;
-		PreparedStatement stmt_3 = null;
-		int num = -1, sem = -1;
+		PreparedStatement stmt = null;
+		int num = -1, sem = 8;
 
-//		try {
-//
-//			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-//			String sql_1 = "insert into registeredcourse values(?,?,?,?,?)";
-//			stmt_1 = conn.prepareStatement(sql_1);
-//			stmt_1.setString(1, courseCode);
-//			stmt_1.setInt(2, 8);
-//			stmt_1.setString(3, studentid);
-//			stmt_1.setString(4, "NA");
-//			stmt_1.setInt(5, 1);
-//			stmt_1.execute();
-//			while(rs.next())
-//			{
-//				num = rs.getInt("numcourses");
-//				sem = rs.getInt("semester");
-//			}
-//
-//			if(num > 4 && type == 1)
-//			{
-//				System.out.println("\nYou cannot register for more courses of current type!\n");
-//				return;
-//			}
-//			
-//			if(num > 2 && type == 1)
-//			{
-//				System.out.println("\nYou cannot register for more courses of current type!\n");
-//				return;
-//			}
-//////			
-//			String sql_2 = "insert into registeredcourse (coursecode, semester, studentId, grade, type) values(?,?,?,?,?)";
-//			stmt_2 = conn.prepareStatement(sql_2);
-//			stmt_2.setString(1, courseCode);
-//			stmt_2.setInt(2, sem);
-//			stmt_2.setInt(3, student_id);
-//			stmt_2.setString(3, "NA");
-//			stmt_2.setInt(5, type);
-//			stmt_2.executeUpdate();
-//			stmt_2.close();
-//			
-//			
-//			String sql_3 = "update student set numcourses = numcourses+1 where studentid =" + student_id;
-//			stmt_3 = conn.prepareStatement(sql_3);			
-//			stmt_3.execute(sql_3);
-//			stmt_1.close();
-//			conn.close();
-//
-//		} catch (SQLException se) {
-//			se.printStackTrace();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			try {
-//				if (stmt_1 != null)
-//					stmt_1.close();
-//			} catch (SQLException se2) {
-//			}
-//			try {
-//				if (conn != null)
-//					conn.close();
-//			} catch (SQLException se) {
-//				se.printStackTrace();
-//			}
-//		}
+		try {
+			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			String sql = "insert into registeredcourse (coursecode, semester, studentId, grade, type) values(?,?,?,?,?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, courseCode);
+			stmt.setInt(2, sem);
+			stmt.setString(3, studentid);
+			stmt.setString(4, "NA");
+			stmt.setInt(5, type);
+			stmt.executeUpdate();
+			stmt.close();
+
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException se2) {
+			}
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
+		}
 
 	}
 
@@ -313,7 +278,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 	}
 
 	public List<Grades> viewGrades(String studentid) {
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<Grades> grades = new ArrayList<Grades>();
@@ -330,7 +295,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
 					String grade = rs.getString("grade");
-					System.out.println(cc+" "+cn+" "+grade);
+					System.out.println(cc + " " + cn + " " + grade);
 					Grades g = new Grades();
 					g.setCourseCode(cc);
 					g.setCourseName(cn);
@@ -380,7 +345,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
 					int type = rs.getInt("type");
-					
+
 					RegisteredCourse c = new RegisteredCourse();
 					c.setCourseCode(cc);
 					c.setCourseName(cn);
@@ -433,7 +398,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					c.setCourseCode(coursecode);
 					c.setName(coursename);
 					c.setFee(fee);
-					courses.add(c);	
+					courses.add(c);
 				}
 			}
 
@@ -510,8 +475,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 	}
 
 	@Override
-	public void payFeesByNetBanking(OnlinePayment onp, Payment p)
-	{
+	public void payFeesByNetBanking(OnlinePayment onp, Payment p) {
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 

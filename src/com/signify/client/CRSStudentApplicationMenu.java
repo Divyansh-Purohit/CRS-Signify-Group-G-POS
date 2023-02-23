@@ -58,7 +58,7 @@ public class CRSStudentApplicationMenu {
 					System.out.println();
 					sc.nextLine();
 					System.out.print("Enter Course Code: ");
-					String courseCode = sc.nextLine();
+					String courseCode = sc.next();
 					System.out.print("Enter Type: ");
 					int type = sc.nextInt();
 					ss.addCourse(studentid, courseCode, type);
