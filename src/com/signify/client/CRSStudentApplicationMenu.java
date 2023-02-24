@@ -8,8 +8,22 @@ import com.signify.service.*;
  * @author dp201
  *
  */
-public class CRSStudentApplicationMenu {
 
+/*
+ * Class that display Professor Client Menu
+ * Semester Registration
+ * View Grades
+ * View Registered Course
+ * Add Course
+ * Drop Course
+ * Pay Fees
+ * Logout
+ */
+public class CRSStudentApplicationMenu {
+	/**
+	 * 
+	 * @param studentid
+	 */
 	public void displayStudentMenu(String studentid)
 	{
 		System.out.println("\nWELCOME TO STUDENT MENU");

@@ -16,8 +16,12 @@ import java.util.*;
 public class ProfessorServiceOperation extends UserServiceOperation implements ProfessorInterface{
 	 
 	ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
+	/**
+	 * viewing enrolled students
+	 */
 	public List<Student> viewEnrolledStudents(String professorId)
 	{
+		
 		List<Student> es = null;	
 		try {
 			es = pdi.viewEnrolledStudents(professorId);
@@ -28,6 +32,10 @@ public class ProfessorServiceOperation extends UserServiceOperation implements P
 		}
 		return es;
 	}
+	
+	/**
+	 * adding grades
+	 */
 	
 	public void addGrades(String professorId, String StudentId, String grade)
 	{

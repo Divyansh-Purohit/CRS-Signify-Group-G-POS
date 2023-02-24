@@ -8,7 +8,18 @@ import java.util.*;
  * @author dp201
  *
  */
+
+/*
+ * Class that display Professor Client Menu
+ * View Enrolled Students
+ * Add course
+ * Logout
+ */
 public class CRSProfessorApplicationMenu {
+	/**
+	 * 
+	 * @param professorId
+	 */
 
 	public void displayProfessorMenu(String professorId)
 	{

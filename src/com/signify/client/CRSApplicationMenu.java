@@ -7,7 +7,19 @@ import java.util.*;
  * @author dp201
  *
  */
+
+/*
+ * Main Menu of the project :-
+ * user login 
+ * register student
+ * update password
+ * user logout
+ */
 public class CRSApplicationMenu {
+	/**
+	 * 
+	 * @param args
+	 */
 
 	public static void main(String args[]) {
 
@@ -39,6 +51,7 @@ public class CRSApplicationMenu {
 			}
 			switch (choice) {
 			case 1: {
+				
 				System.out.print("ENTER USERNAME: ");
 				String username = sc.next();
 				System.out.print("ENTER PASSWORD: ");
@@ -77,12 +90,16 @@ public class CRSApplicationMenu {
 				break;
 			}
 
-			case 2: {
+			case 2: 
+				
+			{
 				StudentInterface ss = new StudentServiceOperation();
 				ss.register();
 				break;
 			}
-			case 3: {
+			case 3: 
+				
+			{
 				String username_p, password_p, newpassword_p = "DEFAULT";
 				System.out.print("ENTER USERNAME: ");
 				username_p = sc.next();
@@ -108,7 +125,9 @@ public class CRSApplicationMenu {
 				break;
 			}
 
-			case 4: {
+			case 4: 
+			
+			{
 				uso.logout();
 				return;
 			}

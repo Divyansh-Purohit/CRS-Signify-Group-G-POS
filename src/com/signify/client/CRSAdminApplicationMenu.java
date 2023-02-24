@@ -18,8 +18,26 @@ import com.signify.service.AdminServiceOperation;
  * @author dp201
  *
  */
-public class CRSAdminApplicationMenu {
 
+/*
+ * Class that display Admin Client Menu:-
+ * Approving student
+ * Add professor
+ * Add Admin
+ * Assign Professor to course
+ * Add Course
+ * Remove Course
+ * View course details
+ * Calculate CPI
+ * View Professors
+ * View Admins
+ * Logout
+ */
+public class CRSAdminApplicationMenu {
+	/**
+	 * 
+	 * @param adminid
+	 */
 	public void displayAdminMenu(String adminid) {
 		System.out.println("\nWELCOME TO ADMIN MENU");
 		System.out.println("=========================");

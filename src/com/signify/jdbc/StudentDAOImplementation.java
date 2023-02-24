@@ -31,6 +31,9 @@ import com.signify.utils.DBUtils;
  *
  */
 public class StudentDAOImplementation implements StudentDAOInterface {
+	/**
+	 * method to register a new student
+	 */
 
 	public void register(Student student) {
 
@@ -73,7 +76,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Method to do semester registration
+	 */
 	public void semesterRegister(String studentid, int sem) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -97,6 +102,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 
 	}
+	/**
+	 * Method to get studentid
+	 */
 
 	public String getStudentId(String userid) {
 		Connection conn = null;
@@ -121,6 +129,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return student_id;
 	}
+	/**
+	 * Method to get admin approval status
+	 */
 
 	public int getIsApprovedStatus(String studentid) {
 
@@ -147,7 +158,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return isapproved;
 	}
-
+	
+	/**
+	 * Method to view list of all available courses
+	 */
 	public List<Course> getAvailableCourses(String studentid) throws SemesterNotRegisteredException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -190,6 +204,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return ac;
 	}
+	/**
+	 * Method to add a new course
+	 */
 
 	public void addCourse(String studentid, String courseCode, int type) throws CourseLimitExceedException {
 		Connection conn = null;
@@ -259,6 +276,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 
 	}
+	/**
+	 * Method to drop a course
+	 */
 
 	public void dropCourse(String studentid, String courseId) throws CourseNotFoundException {
 		Connection conn = null;
@@ -290,6 +310,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 
 	}
+	/**
+	 * Method to view grades of registered courses
+	 */
 
 	public List<Grades> viewGrades(String studentid) {
 
@@ -329,7 +352,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return grades;
 	}
-
+	/**
+	 * Method to view list of registered courses
+	 */
 	public List<RegisteredCourse> viewRegisteredCourses(String studentid) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -366,6 +391,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return rcourses;
 	}
+	/**
+	 * Method to view payable fees
+	 */
 
 	public List<Course> getFees(String studentid) {
 		Connection conn = null;
@@ -403,6 +431,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return courses;
 	}
+	
+	/**
+	 * Method to pay fees by card
+	 */
 
 	@Override
 	public void payFeesByCard(OnlinePayment onp, Payment p) {
@@ -439,7 +471,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Method to pay fees by netbanking
+	 */
 	@Override
 	public void payFeesByNetBanking(OnlinePayment onp, Payment p) {
 		Connection conn = null;
@@ -475,7 +510,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Method to pay fees by cheque
+	 */
 	@Override
 	public void payFeesByCheque(OfflinePayment ofp, Payment p) {
 		Connection conn = null;
@@ -510,7 +547,9 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 *Method to pay fees by cash
+	 */
 	@Override
 	public void payFeesByCash(OfflinePayment ofp, Payment p) {
 
