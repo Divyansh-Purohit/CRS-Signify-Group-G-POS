@@ -6,6 +6,11 @@ public class ProfessorNotDeletedException extends Exception {
 	 * Course Code which cannot be Deleted.
 	 */
 	private String professorId;
+	
+	/**
+	 * Constructor
+	 * @param professorId
+	 */
 
 	public ProfessorNotDeletedException(String professorId) {
 		this.professorId = professorId;

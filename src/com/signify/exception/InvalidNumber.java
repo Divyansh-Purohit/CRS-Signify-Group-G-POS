@@ -12,7 +12,7 @@ private String phnum;
 	
 	/**
 	 * Constructor
-	 * @param courseCode
+	 * @param phnum
 	 */
 	public InvalidNumber(String phnum) {
 		this.phnum = phnum;
@@ -20,7 +20,7 @@ private String phnum;
 	
 	/**
 	 * Getter method
-	 * @return course code
+	 * @return phnum
 	 */
 	public String getPhnum() {
 		return phnum;

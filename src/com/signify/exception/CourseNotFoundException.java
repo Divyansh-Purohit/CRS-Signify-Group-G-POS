@@ -8,6 +8,10 @@ package com.signify.exception;
  */
 public class CourseNotFoundException extends Exception{
 	private String courseCode;
+	/**
+	 * Constructor
+	 * @param courseCode
+	 */
 	
 	public CourseNotFoundException(String courseCode)
 	{	

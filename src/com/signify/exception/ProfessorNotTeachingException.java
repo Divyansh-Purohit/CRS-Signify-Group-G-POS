@@ -13,7 +13,7 @@ public class ProfessorNotTeachingException extends Exception{
 	/***
 	 * Constructor
 	 * 
-	 * @param courseId
+	 * @param professorId
 	 */
 	public ProfessorNotTeachingException(String professorId) {
 		this.professorId = professorId;

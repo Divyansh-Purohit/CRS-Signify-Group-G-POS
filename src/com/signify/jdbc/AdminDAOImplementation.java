@@ -1,6 +1,9 @@
 /**
- * 
- */
+
+	* This class implements the AdminDAOInterface and provides functionality for
+	  adding Admin, Professor, Course, and assigning Professor to Course in the
+	  database.
+*/
 package com.signify.jdbc;
 
 import com.signify.exception.*;
@@ -21,6 +24,12 @@ import java.util.*;
  *
  */
 public class AdminDAOImplementation implements AdminDAOInterface {
+/**
+	* This method adds a new admin to the database.
+	* 
+	* @param newAdmin the Admin object to be added to the database
+	* @throws UserAlreadyExistException if the user already exists in the database
+ */
 
 	public void addAdmin(Admin newAdmin) throws UserAlreadyExistException {
 		Connection conn = null;
@@ -52,6 +61,13 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 
 	}
+/**
+	* This method adds a new professor to the database.
+	* 
+	* @param p the Professor object to be added to the database
+	* @throws ProfessorNotAddedException  if the professor could not be added to the database
+	* @throws UserAlreadyExistException  if the user already exists in the database
+ */
 
 	public void addProfessor(Professor p) throws ProfessorNotAddedException, UserAlreadyExistException {
 		Connection conn = null;
@@ -85,7 +101,15 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			se.printStackTrace();
 		}
 	}
+/**
 
+	* Adds a course to the catalog and updates the professor's record if the course does not already exist
+	*
+	* @param c the course object to be added to the catalog
+	* @throws AddCourseException if an error occurs while adding the course to the catalog
+	* @throws ProfessorNotFoundException if the specified instructor is not found in the database
+	* @throws CourseFoundException if the specified course already exists in the catalog
+*/
 	public void addCourse(Course c) throws AddCourseException, ProfessorNotFoundException, CourseFoundException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -142,7 +166,13 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new CourseFoundException(c.getCourseCode());
 		}
 	}
-
+	/**
+	* Method to remove course using SQL commands
+	* @param coursecode
+	* @throws CourseNotFoundException
+	* @throws CourseNotDeletedException
+	*/
+	
 	public void removeCourse(String coursecode) throws CourseNotFoundException, CourseNotDeletedException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -161,7 +191,13 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new CourseNotDeletedException(coursecode);
 		}
 	}
-
+	/**
+	* Method to assign professor to course
+	* @param professorid
+	* @param coursecode
+	* @throws CourseNotAssignedToProfessorException
+	*/
+	
 	public void assignProfessorToCourse(String professorid, String courseCode) throws CourseNotAssignedToProfessorException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -193,6 +229,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new CourseNotAssignedToProfessorException(courseCode, professorid);
 		}
 	}
+	/**
+	* Method to view course details
+	* @param coursecode
+	* @throws CourseNotFoundException
+	* @return c
+	*/
 
 	public Course viewCourseDetails(String courseCode) throws CourseNotFoundException {
 		Course c = new Course();
@@ -224,7 +266,10 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return c;
 	}
-
+	/**
+	* Method to view listed courses
+	* @return list of available courses
+	*/
 	public List<Course> viewCourses() {
 		List<Course> cs = new ArrayList<Course>();
 		Connection conn = null;
@@ -254,6 +299,10 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return cs;
 	}
+	/**
+	* Method to view list of unapproved students
+	* @return List of unapproved students
+	*/
 
 	public List<Student> listOfUnapprovedStudents() {
 		List<Student> uas = new ArrayList<Student>();
@@ -284,6 +333,10 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return uas;
 	}
+	/**
+	 * Approve all Students using SQL commands
+	 * 
+	 */
 
 	public void approveAllStudents() {
 		Connection conn = null;
@@ -303,7 +356,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	* Method to approve student via student id
+	* @param studentid
+	* @throws StudentNotFoundForVerificationException
+	*/
+	
 	public void approveStudentById(String studentid) throws StudentNotFoundForVerificationException {
 		System.out.println(studentid);
 		Connection conn = null;
@@ -323,6 +381,10 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new StudentNotFoundForVerificationException(studentid);
 		}
 	}
+	/**
+	* Method to view listed admins
+	* @return list of admins
+	*/
 
 	public List<Admin> viewAdmins() {
 		List<Admin> la = new ArrayList<Admin>();
@@ -351,6 +413,10 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return la;
 	}
+	/**
+	* Method to view listed professors
+	* @return list of professors
+	*/
 
 	public List<Professor> viewProfessors() {
 
@@ -386,6 +452,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return lp;
 	}
+	/**
+	* Calculates the CPI (Cumulative Performance Index) of a student.
+	* @param studentid the ID of the student whose CPI is to be calculated
+	* @return the CPI of the student
+	* @throws StudentNotRegisteredException if the student is not registered in the system
+	*/
 
 	public double calculateCpi(String studentid) throws StudentNotRegisteredException {
 

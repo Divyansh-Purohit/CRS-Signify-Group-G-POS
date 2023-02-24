@@ -6,6 +6,10 @@ public class PaymentNotFoundException extends Exception {
 	 * @paymentId which is not found
 	 */
 	private String paymentId;
+	/**
+	 * Constructor
+	 * @param id
+	 */
 
 	public PaymentNotFoundException(String id) {
 		this.paymentId = id;

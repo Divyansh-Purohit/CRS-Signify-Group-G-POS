@@ -12,7 +12,7 @@ public class AddCourseException extends Exception {
 	 * @param courseCode
 	 */
 	public AddCourseException(String courseCode) {
-		this.courseId = courseId;
+		this.courseId = courseCode;
 	}
 
 	/**
