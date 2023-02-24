@@ -325,14 +325,13 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt = conn.prepareStatement(SQLConstants.VIEW_GRADES);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
-			if (rs == null) {
+			if (!(rs.next())) {
 				System.out.println("\nNO COURSES FOUND!\n");
 			} else {
 				while (rs.next()) {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
 					String grade = rs.getString("grade");
-					System.out.println(cc + " " + cn + " " + grade);
 					Grades g = new Grades();
 					g.setCourseCode(cc);
 					g.setCourseName(cn);
@@ -340,7 +339,6 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					grades.add(g);
 				}
 			}
-
 			rs.close();
 			stmt.close();
 			;

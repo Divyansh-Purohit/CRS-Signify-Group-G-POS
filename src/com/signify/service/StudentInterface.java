@@ -63,16 +63,12 @@ public interface StudentInterface {
 	 * @return
 	 */
 	public List<RegisteredCourse> viewRegisterCourses(String studentId);
-	/**
+  /**
 	 * Method to view grades
 	 * @param studentId
-	 */
-	public void viewGrades(String studentId);
-	/**
-	 * Method to get fees
-	 * @param studentId
-	 * @return
-	 */
+	 */@return List of grades
+	public List<Grades> viewGrades(String studentId);
+
 	public List<Course> getFees(String studentId);
 	/**
 	 * Method to pay fees by card

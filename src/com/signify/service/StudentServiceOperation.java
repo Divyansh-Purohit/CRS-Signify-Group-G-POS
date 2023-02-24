@@ -49,14 +49,15 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 		sdi.register(newStudent);
 		System.out.println("\nSTUDENT REGISTERED SUCCESSFULLY! WAITING FOR APPROVAL FROM ADMIN.\n");
 	}
+
 	/**
 	 * viewing grades
 	 */
-	public void viewGrades(String studentid) {
-		sdi.viewGrades(studentid);
+	public List<Grades> viewGrades(String studentid) {
+		return sdi.viewGrades(studentid);
 	}
 	/**
-	 * return list of registered courses
+	 * return list of grades of registered courses
 	 */
 
 	public List<RegisteredCourse> viewRegisterCourses(String studentid) {

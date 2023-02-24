@@ -16,7 +16,7 @@ public class SQLConstants {
 	public static final String GET_USER_ID = "select userid from user where username=? and password=?";
 	public static final String DELETE_USER_COURSE = "delete from registeredcourse where courseCode = ? and studentId = ?";
 	public static final String UPADTE_CATALOG_AFTER_STUDENT = "update catalog SET numstudents=numstudents-1 WHERE coursecode=?";
-	public static final String VIEW_GRADES = "select rc.courseCode as coursecode, cat.coursename as coursename, rc.grade from registeredcourse rc natural join catalog cat where rc.studentId = ? and type = 1";
+	public static final String VIEW_GRADES = "select rc.coursecode as coursecode, cat.coursename as coursename, rc.grade from registeredcourse rc inner join  catalog cat on cat.coursecode = rc.courseCode where rc.studentId = ? and rc.type = 1";
 	public static final String VIEW_REGISTERED_COURSES = "select rc.courseCode as coursecode, cat.coursename as coursename, rc.type as type from registeredcourse rc inner join catalog cat on cat.coursecode = rc.coursecode where rc.studentId=?";
 	public static final String GET_NUM_TYPE_1_COURSES = "select count(*) from registeredcourse where studentid = ? and type = 1";
 	public static final String GET_NUM_TYPE_2_COURSES = "select count(*) from registeredcourse where studentid = ? and type = 2";

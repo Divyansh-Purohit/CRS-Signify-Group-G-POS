@@ -512,7 +512,6 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		catch (StudentNotRegisteredException e) {
 			throw new StudentNotRegisteredException(studentid);
 		}
-		System.out.println(cpi);
 		return cpi;
 	}
 

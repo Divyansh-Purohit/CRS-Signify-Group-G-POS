@@ -1,6 +1,8 @@
 package com.signify.client;
 import com.signify.bean.*;
-import com.signify.service.StudentInterface;
+import com.signify.exception.StudentNotRegisteredException;
+import com.signify.jdbc.AdminDAOImplementation;
+
 import java.util.*;
 import com.signify.service.*;
 
@@ -32,7 +34,7 @@ public class CRSStudentApplicationMenu {
 		while(true)
 		{
 			int choice = 0;
-			System.out.println("PRESS 1 FOR SEMESTER REGISTRATION\nPRESS 2 TO VIEW GRADES\nPRESS 3 TO VIEW REGISTERED COURSE\nPRESS 4 TO ADD COURSE\nPRESS 5 TO DROP A COURSE\nPRESS 6 TO PAY FEES\nPRESS 7 TO LOGOUT\n");
+			System.out.println("PRESS 1 FOR SEMESTER REGISTRATION\nPRESS 2 TO VIEW REPORT CARD\nPRESS 3 TO VIEW REGISTERED COURSE\nPRESS 4 TO ADD COURSE\nPRESS 5 TO DROP A COURSE\nPRESS 6 TO PAY FEES\nPRESS 7 TO LOGOUT\n");
 			StudentInterface ss = new StudentServiceOperation();
 			try {
 				choice = sc.nextInt();				
@@ -52,8 +54,28 @@ public class CRSStudentApplicationMenu {
 				}
 				case 2:
 				{
-					ss.viewGrades(studentid);
-					System.out.println();
+					List<Grades> g = new ArrayList<Grades>();
+					g = ss.viewGrades(studentid);
+					double cpi = 0.0;
+					AdminDAOImplementation adi = new AdminDAOImplementation();
+					try {
+					cpi = adi.calculateCpi(studentid);
+					}catch(StudentNotRegisteredException e)
+					{
+						;
+					}
+					if(g.size() == 0)
+					{
+						System.out.println("\nNo COURSES FOUND!\n");
+						break;
+					}
+					System.out.println("\nCourse Code\tCourse Name\tGrade Obtained\n");
+					System.out.println("==============================================\n");
+					for(Grades x: g)
+					{
+						System.out.println(x.getCourseCode()+"\t\t"+x.getCourseName()+"\t\t"+x.getGrade());
+					}
+					System.out.println("\nYOUR CPI IS: "+cpi+"\n");
 					break;
 				}
 				case 3:
