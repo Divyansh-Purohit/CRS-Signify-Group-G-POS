@@ -66,7 +66,8 @@ public interface StudentInterface {
   /**
 	 * Method to view grades
 	 * @param studentId
-	 */@return List of grades
+	 * @return List of grades
+	 */
 	public List<Grades> viewGrades(String studentId);
 
 	public List<Course> getFees(String studentId);
