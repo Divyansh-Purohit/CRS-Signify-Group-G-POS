@@ -13,9 +13,9 @@ public class CourseLimitExceedException extends Exception{
 	private String studentId;
 
 	/**
-	 * Constructor
-	 * @param num number of courses
- 	 */
+	 * 
+	 * @param studentId
+	 */
 	public CourseLimitExceedException(String studentId)
 	{	
 		this.studentId = studentId;

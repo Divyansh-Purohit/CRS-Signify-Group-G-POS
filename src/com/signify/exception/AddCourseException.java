@@ -9,10 +9,10 @@ public class AddCourseException extends Exception {
 	/***
 	 * Constructor
 	 * 
-	 * @param courseId
+	 * @param courseCode
 	 */
 	public AddCourseException(String courseCode) {
-		this.courseId = courseId;
+		this.courseId = courseCode;
 	}
 
 	/**

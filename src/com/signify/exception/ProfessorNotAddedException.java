@@ -7,6 +7,10 @@ package com.signify.exception;
  */
 public class ProfessorNotAddedException extends Exception{
 	private String professorId;
+	/**
+	 * Constructor
+	 * @param professorId
+	 */
 	
 	public ProfessorNotAddedException(String professorId) {
 		this.professorId = professorId;

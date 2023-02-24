@@ -9,6 +9,11 @@ package com.signify.exception;
 public class ProfessorNotFoundException extends Exception{
 	private String professorId;
 	
+	/**
+	 * Constructor
+	 * @param professorId
+	 */
+	
 	public ProfessorNotFoundException(String professorId)
 	{	
 		this.professorId = professorId;
@@ -16,7 +21,7 @@ public class ProfessorNotFoundException extends Exception{
 
 	/**
 	 * Getter function for professor id
-	 * @return
+	 * @return professorId
 	 */
 	public String getProfessorId()
 	{

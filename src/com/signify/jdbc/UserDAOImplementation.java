@@ -15,6 +15,10 @@ import com.signify.utils.DBUtils;
 
 import java.util.Scanner;
 public class UserDAOImplementation implements UserDAOInterface{
+	
+	/**
+	 * Method to  verify credentials and approve login 
+	 */
 	public String[] login(String username, String password) throws UserNotFoundException
 	{
 		String userid = "";
@@ -55,6 +59,10 @@ public class UserDAOImplementation implements UserDAOInterface{
 		String[] ans = {String.valueOf(roleid),userid};
 		return ans;
 	}
+	
+	/**
+	 * Method to update password in the database
+	 */
 	public boolean updatePassword(String username, String oldPassword, String newPassword) throws UserNotFoundException {
     Connection conn = null;
     PreparedStatement stmtSelect = null;

@@ -7,7 +7,10 @@ package com.signify.exception;
  */
 public class StudentNotRegisteredException extends Exception{
 	 private String studentId;
-	 
+	 /**
+	  * Constructor
+	  * @param studentId
+	  */
 	 public StudentNotRegisteredException(String studentId)
 	 {
 		 this.studentId=studentId;
@@ -15,12 +18,15 @@ public class StudentNotRegisteredException extends Exception{
 	 
 	 /**
 	  * getter function for studentName
-	  * @return
+	  * @return studentId
 	  */
 	 public String getStudentId()
 	 {
 		 return studentId;
 	 }
+	 /**
+	  * Message is displayed when exception is thrown
+	  */
 	 
 	 public String getMessage()
 	 {

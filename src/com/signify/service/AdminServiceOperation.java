@@ -14,20 +14,38 @@ import java.util.*;
  * @author dp201
  *
  */
+/**
+*
+* Implementations of Admin Operations
+*
+*/
+
 public class AdminServiceOperation extends UserServiceOperation implements AdminInterface {
-
+	
+	
 	public AdminDAOImplementation adi = new AdminDAOImplementation();
-
+	/**
+	 * returns list of unapproved students
+	 */
 	public List<Student> listOfUnapprovedStudents() {
+		
 		return adi.listOfUnapprovedStudents();
 	}
-
+	
+	/**
+	 * approves all students
+	 */
 	public void approveAllStudents() {
+		
 		adi.approveAllStudents();
 		return;
 	}
-
+	
+	/**
+	 * approving students by id
+	 */
 	public void approveStudentById(String studentid) {
+		
 		try {
 			adi.approveStudentById(studentid);
 		} catch (StudentNotFoundForVerificationException e) {
@@ -35,8 +53,11 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 		return;
 	}
-
+	/**
+	 * adding professor to db
+	 */
 	public void addProfessor(Professor newProfessor) {
+		
 		try {
 			adi.addProfessor(newProfessor);
 			System.out.println("\nNEW PROFESSOR ADDED TO DB SUCCESSFULLY!\n");
@@ -45,16 +66,23 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 		return;
 	}
-
+	/**
+	 * return list of professors
+	 */
 	public List<Professor> viewProfessors() {
+		
 		return adi.viewProfessors();
 	}
 
 	public List<Admin> viewAdmins() {
 		return adi.viewAdmins();
 	}
-
+	
+	/**
+	 * assigning professor to course
+	 */
 	public void assignProfessorToCourse(String professorId, String courseCode) {
+		
 		try {
 			adi.assignProfessorToCourse(professorId, courseCode);
 			System.out.println("\nProfessor Assigned To Course Successfully!\n");
@@ -63,7 +91,11 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 	}
 
+	/**
+	 * adding admin to db
+	 */
 	public void addAdmin(Admin newAdmin) {
+		
 		try {
 			adi.addAdmin(newAdmin);
 			System.out.println("\nNEW ADMIN ADDED TO DB SUCCESSFULLY!\n");
@@ -75,7 +107,11 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		return;
 	}
 
+	/**
+	 * adding course to db
+	 */
 	public void addCourse(Course c) {
+		
 		try {
 			adi.addCourse(c);
 			System.out.println("\nCOURSE ADDED TO CATALOG SUCCESSFULLY!\n");
@@ -84,8 +120,12 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 		return;
 	}
-
+	
+	/**
+	 * removing course from db
+	 */
 	public void removeCourse(String courseCode) {
+		
 		try {
 			adi.removeCourse(courseCode);
 			System.out.println("\nCOURSE REMOVED FROM CATALOG SUCCESSFULLY!\n");
@@ -94,8 +134,11 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 		return;
 	}
-
+	/**
+	 * viewing course details
+	 */
 	public Course viewCourseDetails(String courseCode) {
+		
 		Course c = null;
 		try {
 			c = adi.viewCourseDetails(courseCode);
@@ -104,8 +147,11 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		}
 		return c;
 	}
-
+	/**
+	 * calculating cpi
+	 */
 	public void calculateCpi(String studentid) {
+		
 		double cpi = 0.0;
 		try {
 			cpi = adi.calculateCpi(studentid);

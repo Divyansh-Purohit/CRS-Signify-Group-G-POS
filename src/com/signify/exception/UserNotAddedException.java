@@ -7,6 +7,10 @@ package com.signify.exception;
  */
 public class UserNotAddedException extends Exception{
 	private String userId;
+	/**
+	 * Constructor
+	 * @param userId
+	 */
 	
 	public UserNotAddedException(String userId) {
 		this.userId = userId;

@@ -11,7 +11,11 @@ package com.signify.exception;
 public class CourseNotAssignedToProfessorException extends Exception{
 	private String courseCode;
 	private String professorId;
-	
+	/**
+	 * Constructor
+	 * @param courseCode
+	 * @param professorId
+	 */
 	public CourseNotAssignedToProfessorException(String courseCode, String professorId) {
 		this.courseCode = courseCode;
 		this.professorId = professorId;

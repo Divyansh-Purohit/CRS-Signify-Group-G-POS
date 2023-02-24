@@ -14,6 +14,9 @@ import com.signify.exception.StudentNotRegisteredException;
 import com.signify.utils.DBUtils;
 
 public class ProfessorDAOImplementation implements ProfessorDAOInterface {
+	/**
+	 * Method to view list of enrolled students
+	 */
 
 	public List<Student> viewEnrolledStudents(String professorId) throws ProfessorNotTeachingException {
 		Connection conn = null;
@@ -54,7 +57,9 @@ public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 		}
 		return students;
 	}
-
+	/**
+	 * Method to add grades
+	 */
 	@Override
 	public void addGrades(String professorId, String studentid, String grade)
 			throws ProfessorNotTeachingException, StudentNotRegisteredException {

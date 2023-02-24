@@ -10,6 +10,10 @@ package com.signify.exception;
  */
 public class CourseNotDeletedException extends Exception{
 private String courseCode;
+/**
+ * Constructor
+ * @param courseCode
+ */
 	
 	public CourseNotDeletedException(String courseCode)
 	{	
