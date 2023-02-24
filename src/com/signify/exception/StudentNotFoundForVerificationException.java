@@ -8,6 +8,6 @@ public class StudentNotFoundForVerificationException extends Exception {
 		this.studentId = studentId;
 	}
 	public String getMessage() {
-		return "studentId: " + studentId + " not found for approval!";
+		return "\nSTUDENT ID \"" + studentId + "\" NOT FOUND IN DATABASE!\n";
 	}
 }

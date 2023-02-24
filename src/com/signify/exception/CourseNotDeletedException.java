@@ -4,24 +4,33 @@
 package com.signify.exception;
 
 /**
- * Exception to check if course was delted successfully.
+ * Exception course is deleted from catalog
+* @author
+ *
  */
-public class CourseNotDeletedException extends Exception {
-
-	/*
-	 * Course Code which cannot be Deleted.
-	 */
-	private String courseCode;
-
-	public CourseNotDeletedException(String courseCode) {
+public class CourseNotDeletedException extends Exception{
+private String courseCode;
+	
+	public CourseNotDeletedException(String courseCode)
+	{	
 		this.courseCode = courseCode;
 	}
 
 	/**
+	 * Getter function for course code
+	 * @return
+	 */
+	public String getCourseCode()
+	{
+		return courseCode;
+	}
+	
+	/**
 	 * Message thrown by exception
 	 */
 	@Override
-	public String getMessage() {
-		return "Course with courseCode: " + courseCode + " can not be deleted.";
+	public String getMessage() 
+	{
+		return "\nCOURSE WITH COURSE CODE \"" + courseCode + "\" CANNOT BE DELETED!\n";
 	}
 }

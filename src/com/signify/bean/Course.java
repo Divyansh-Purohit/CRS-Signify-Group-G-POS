@@ -2,7 +2,14 @@ package com.signify.bean;
 public class Course {
 	private String courseCode, name, instructor;
 	private boolean isOffered;
-	private int numStudents, type;
+	private int numStudents, type, semester;
+	
+	public int getSemester() {
+		return semester;
+	}
+	public void setSemester(int semester) {
+		this.semester = semester;
+	}
 	private double fee;
 	
 	public double getFee() {

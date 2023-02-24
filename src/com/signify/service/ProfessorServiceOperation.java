@@ -4,6 +4,8 @@
 package com.signify.service;
 import com.signify.bean.*;
 import com.signify.collection.UserData;
+import com.signify.exception.ProfessorNotTeachingException;
+import com.signify.exception.StudentNotRegisteredException;
 import com.signify.jdbc.ProfessorDAOImplementation;
 
 import java.util.*;
@@ -13,16 +15,27 @@ import java.util.*;
  */
 public class ProfessorServiceOperation extends UserServiceOperation implements ProfessorInterface{
 	 
+	ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 	public List<Student> viewEnrolledStudents(String professorId)
 	{
-		ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
-		List<Student> es = pdi.viewEnrolledStudents(professorId);
+		List<Student> es = null;	
+		try {
+			es = pdi.viewEnrolledStudents(professorId);
+		}
+		catch(ProfessorNotTeachingException e)
+		{
+			System.out.println(e.getMessage());
+		}
 		return es;
 	}
 	
 	public void addGrades(String professorId, String StudentId, String grade)
 	{
-		ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
-		pdi.addGrades(professorId, StudentId, grade);
+		try {
+			pdi.addGrades(professorId, StudentId, grade);
+			System.out.println("\nSTUDENT HAS BEEN GRADED!\n");
+		} catch (ProfessorNotTeachingException | StudentNotRegisteredException e) {
+			System.out.println(e.getMessage());
+		}
 	}	
 }

@@ -8,7 +8,7 @@ tmp/
 local.properties
 .settings/
 .loadpath
-.recommenders
+.reconnenders
 
 # External tool builders
 .externalToolBuilders/
@@ -43,8 +43,8 @@ local.properties
 # STS (Spring Tool Suite)
 .springBeans
 
-# Code Recommenders
-.recommenders/
+# Code Reconnenders
+.reconnenders/
 
 # Annotation Processing
 .apt_generated/
@@ -55,6 +55,6 @@ local.properties
 .scala_dependencies
 .worksheet
 
-# Uncomment this line if you wish to ignore the project description file.
+# Unconnent this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
 #.project

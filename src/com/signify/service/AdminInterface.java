@@ -17,7 +17,7 @@ public interface AdminInterface {
 	public List<Student> listOfUnapprovedStudents();
 	public void approveAllStudents();
 	public void approveStudentById(String studentid);
-	public double calculateCpi(String studentId);
+	public void calculateCpi(String studentId);
 	public void generateReportCard(String studentId);
 	
 }

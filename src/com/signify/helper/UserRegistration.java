@@ -1,5 +1,6 @@
 package com.signify.helper;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -24,12 +25,28 @@ public class UserRegistration {
 		password = sc.nextLine();
 		System.out.print("Enter Address: ");
 		address = sc.nextLine();
-		System.out.println("Enter Date of Joining (YYYY-MM-DD) or Press 1 For Today: ");
-		doj = sc.nextLine();
-		if(doj.equals("1"))
+		while(true)
 		{
-			doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			System.out.print("Enter Date of Joining (YYYY-MM-DD) or Press 1 For Today: ");
+			doj = sc.nextLine();
+			if(doj.equals("1"))
+			{
+				doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				break;
+			}
+			else
+			{
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				dateFormat.setLenient(false);
+				try {
+					dateFormat.parse(doj.trim());
+				} catch (ParseException pe) {
+					System.out.println("\nINVALID DATE ENTERED!\n");
+				}
+				break;
+			}
 		}
+		
 		userid = UUID.randomUUID().toString();
 
 		User newUser = new User();

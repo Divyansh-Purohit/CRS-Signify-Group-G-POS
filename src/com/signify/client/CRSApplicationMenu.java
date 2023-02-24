@@ -15,13 +15,15 @@ public class CRSApplicationMenu {
 
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver");
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		UserServiceOperation uso = new UserServiceOperation();
+		UserInterface uso = new UserServiceOperation();
 		Scanner sc = new Scanner(System.in);
 		String userid = "-1", studentid = "-1";
 		int roleid = -1;
+		int choice = 0;
 		while (true) {
 			System.out.println("\nWELCOME TO THE CRS APPLICATION");
 			System.out.println("==============================");
@@ -29,7 +31,12 @@ public class CRSApplicationMenu {
 			System.out.println("PRESS 2 FOR STUDENT REGISTRATION");
 			System.out.println("PRESS 3 TO UPDATE PASSWORD");
 			System.out.println("PRESS 4 TO EXIT\n");
-			int choice = sc.nextInt();
+			try {
+				choice = sc.nextInt();
+			} catch (InputMismatchException e) {
+				sc.nextLine();
+				choice = 0;
+			}
 			switch (choice) {
 			case 1: {
 				System.out.print("ENTER USERNAME: ");
@@ -37,11 +44,13 @@ public class CRSApplicationMenu {
 				System.out.print("ENTER PASSWORD: ");
 				String password = sc.next();
 
-				System.out.println("\nLogin in Process\n");
-
 				String[] userLoginDetails = uso.login(username, password);
-
-				roleid = Integer.valueOf(userLoginDetails[0]);
+				try {
+					roleid = Integer.valueOf(userLoginDetails[0]);
+				} catch (NumberFormatException e) {
+					System.out.println("\nINVALID USERNAME OR PASSWORD!\n");
+					break;
+				}
 				userid = userLoginDetails[1];
 
 				if (roleid == 2) {
@@ -79,12 +88,22 @@ public class CRSApplicationMenu {
 				username_p = sc.next();
 				System.out.print("ENTER PASSWORD: ");
 				password_p = sc.next();
-				UserInterface us = new UserServiceOperation();
-				boolean status = us.updatePassword(username_p, password_p, newpassword_p);
-				if (status) {
-					System.out.println("YOUR PASSWORD HAS BEEN UPDATE UCCESSFULLY!\n");
-				} else {
-					System.out.println("YOUR PASSWORD COULD NOT BE UPDATED!\n");
+				String[] uid = uso.login(username_p, newpassword_p);
+				try {
+					System.out.println("AS"+roleid);
+					roleid = Integer.valueOf(uid[0]);
+					
+				} catch (NumberFormatException e) {
+					System.out.println("\nINVALID USERNAME OR PASSWORD!\n");
+					break;
+				}
+				userid = uid[1];
+				System.out.println("AS"+userid);
+				if(userid != null)
+				{
+					System.out.print("ENTER NEW PASSWORD: ");
+					newpassword_p = sc.nextLine();
+					uso.updatePassword(username_p, password_p, newpassword_p);
 				}
 				break;
 			}

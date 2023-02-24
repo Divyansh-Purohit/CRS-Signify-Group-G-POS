@@ -20,6 +20,6 @@ public class AddCourseException extends Exception {
 	 */
 	@Override
 	public String getMessage() {
-		return "Course with courseId " + courseId + " already exist in catalog.";
+		return "\nCOURSE WITH COURSE CODE \""+courseId+"\" COULD NOT BE ADDED!\n";
 	}
 }

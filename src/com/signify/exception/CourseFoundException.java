@@ -1,36 +1,40 @@
+/**
+ * 
+ */
 package com.signify.exception;
 
 /**
- * Exception to check if course is already registered by student
-* @author
+ * Exception to check if course is already present in catalog
+ * 
+ * @author
  *
  */
-public class CourseAlreadyRegisteredException extends Exception{
-	
+public class CourseFoundException extends Exception {
 	private String courseCode;
-	
-	/**
+
+	/***
 	 * Constructor
+	 * 
 	 * @param courseCode
 	 */
-	public CourseAlreadyRegisteredException(String courseCode) {
+	public CourseFoundException(String courseCode) {
 		this.courseCode = courseCode;
 	}
-	
+
 	/**
 	 * Getter method
+	 * 
 	 * @return course code
 	 */
 	public String getCourseCode() {
 		return courseCode;
 	}
-	
+
 	/**
 	 * Message returned when exception is thrown
 	 */
 	@Override
 	public String getMessage() {
-		return "You have already registered for " + courseCode;
+		return "\nCOURSE WITH COURSE CODE \""+courseCode+"\" ALREADY EXISTS IN CATALOG!\n";
 	}
-
 }

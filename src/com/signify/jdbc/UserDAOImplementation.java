@@ -9,10 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.signify.constants.SQLConstants;
+import com.signify.exception.UserNotFoundException;
 import com.signify.jdbc.UserDAOInterface;
+import com.signify.utils.DBUtils;
+
 import java.util.Scanner;
 public class UserDAOImplementation implements UserDAOInterface{
-	public String[] login(String username, String password)
+	public String[] login(String username, String password) throws UserNotFoundException
 	{
 		String userid = "";
 		String roleid = "";
@@ -27,6 +30,11 @@ public class UserDAOImplementation implements UserDAOInterface{
 			   stmt.setString(2, password);
 			   ResultSet rs = stmt.executeQuery();
 			   
+			   if(rs == null)
+			   {
+				   throw new UserNotFoundException(username);
+			   }
+			   
 			   while(rs.next())
 			   {
 			      userid = rs.getString("userid");
@@ -35,29 +43,19 @@ public class UserDAOImplementation implements UserDAOInterface{
 			   
 			   rs.close();
 			   stmt.close();
-			   conn.close();
+			   ;
 			     			      
 			}
+		
 		catch(SQLException se){
 			 se.printStackTrace();
 		}catch(Exception e){
 			 e.printStackTrace();
-		}finally{
-		     try{
-			       if(stmt!=null)
-			          stmt.close();
-			 }catch(SQLException se2){
-			 }try{
-			    if(conn!=null)
-			       conn.close();
-			 	}catch(SQLException se){
-			       se.printStackTrace();
-			    }
 		}
 		String[] ans = {String.valueOf(roleid),userid};
 		return ans;
 	}
-	public boolean updatePassword(String username, String oldPassword, String newPassword) {
+	public boolean updatePassword(String username, String oldPassword, String newPassword) throws UserNotFoundException {
     Connection conn = null;
     PreparedStatement stmtSelect = null;
     PreparedStatement stmtUpdate = null;
@@ -65,11 +63,17 @@ public class UserDAOImplementation implements UserDAOInterface{
     boolean success = false;
     
     try {
-        conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+        conn = DBUtils.getConnection();
         stmtSelect = conn.prepareStatement(SQLConstants.VIEW_USER);
         stmtSelect.setString(1, username);
         stmtSelect.setString(2, oldPassword);
         rs = stmtSelect.executeQuery();
+        System.out.println("ABC");
+        if(rs == null)
+        {
+        	throw new UserNotFoundException(username);
+        }
+        
         rs.next();
         int count = rs.getInt(1);
         if (count == 1) {
@@ -90,7 +94,7 @@ public class UserDAOImplementation implements UserDAOInterface{
             if (rs != null) rs.close();
             if (stmtSelect != null) stmtSelect.close();
             if (stmtUpdate != null) stmtUpdate.close();
-            if (conn != null) conn.close();
+            if (conn != null) ;
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,82 +1,121 @@
 package com.signify.service;
+
 import com.signify.bean.*;
 import com.signify.collection.UserData;
 import com.signify.jdbc.AdminDAOImplementation;
+import com.signify.exception.*;
 
 import helper.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 /**
  * @author dp201
  *
  */
-public class AdminServiceOperation extends UserServiceOperation implements AdminInterface{
-	
-	
+public class AdminServiceOperation extends UserServiceOperation implements AdminInterface {
+
 	public AdminDAOImplementation adi = new AdminDAOImplementation();
-	
-	public List<Student> listOfUnapprovedStudents()
-	{	
+
+	public List<Student> listOfUnapprovedStudents() {
 		return adi.listOfUnapprovedStudents();
-		
 	}
-	public void approveAllStudents()
-	{
+
+	public void approveAllStudents() {
 		adi.approveAllStudents();
 		return;
 	}
-	
-	public void approveStudentById(String studentid)
-	{
-		adi.approveStudentById(studentid);
+
+	public void approveStudentById(String studentid) {
+		try {
+			adi.approveStudentById(studentid);
+		} catch (StudentNotFoundForVerificationException e) {
+			System.out.println(e.getMessage());
+		}
 		return;
 	}
-	public void addProfessor(Professor newProfessor)
-	{
-		adi.addProfessor(newProfessor);
+
+	public void addProfessor(Professor newProfessor) {
+		try {
+			adi.addProfessor(newProfessor);
+			System.out.println("\nNEW PROFESSOR ADDED TO DB SUCCESSFULLY!\n");
+		} catch (ProfessorNotAddedException | UserAlreadyExistException e) {
+			System.out.println(e.getMessage());
+		}
 		return;
 	}
-	public List<Professor> viewProfessors()
-	{
-		return adi.viewProfessors();	
+
+	public List<Professor> viewProfessors() {
+		return adi.viewProfessors();
 	}
-	public List<Admin> viewAdmins()
-	{
+
+	public List<Admin> viewAdmins() {
 		return adi.viewAdmins();
-	}	
-	public void assignProfessorToCourse(String professorId, String courseCode)
-	{
-		adi.assignProfessorToCourse(professorId, courseCode);
 	}
-	
-	public void addAdmin(Admin newAdmin)
-	{
-		adi.addAdmin(newAdmin);
+
+	public void assignProfessorToCourse(String professorId, String courseCode) {
+		try {
+			adi.assignProfessorToCourse(professorId, courseCode);
+			System.out.println("\nProfessor Assigned To Course Successfully!\n");
+		} catch (CourseNotAssignedToProfessorException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public void addAdmin(Admin newAdmin) {
+		try {
+			adi.addAdmin(newAdmin);
+			System.out.println("\nNEW ADMIN ADDED TO DB SUCCESSFULLY!\n");
+
+		} catch (UserAlreadyExistException e) {
+			System.out.println(e.getMessage());
+		}
+
 		return;
 	}
-				
-	public void addCourse(Course c)
-	{
-		adi.addCourse(c);
+
+	public void addCourse(Course c) {
+		try {
+			adi.addCourse(c);
+			System.out.println("\nCOURSE ADDED TO CATALOG SUCCESSFULLY!\n");
+		} catch (CourseFoundException | ProfessorNotFoundException | AddCourseException e) {
+			System.out.println(e.getMessage());
+		}
 		return;
 	}
-	
-	public void removeCourse(String courseCode)
-	{
-		adi.removeCourse(courseCode);
+
+	public void removeCourse(String courseCode) {
+		try {
+			adi.removeCourse(courseCode);
+			System.out.println("\nCOURSE REMOVED FROM CATALOG SUCCESSFULLY!\n");
+		} catch (CourseNotFoundException | CourseNotDeletedException e) {
+			System.out.println(e.getMessage());
+		}
 		return;
 	}
-	public Course viewCourseDetails(String courseCode)
-	{
-		return adi.viewCourseDetails(courseCode);		
+
+	public Course viewCourseDetails(String courseCode) {
+		Course c = null;
+		try {
+			c = adi.viewCourseDetails(courseCode);
+		} catch (CourseNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		return c;
 	}
-	public double calculateCpi(String studentid)
-	{
-		return adi.calculateCpi(studentid);
+
+	public void calculateCpi(String studentid) {
+		double cpi = 0.0;
+		try {
+			cpi = adi.calculateCpi(studentid);
+			System.out.print("\nTHE CPI FOR STUDENT WITH STUDENT ID \""+studentid+"\" IS "+cpi+"\n");
+		} catch (StudentNotRegisteredException e) {
+			System.out.println(e.getMessage());
+		}
 	}
-	public void generateReportCard(String studentId)
-	{
+
+	public void generateReportCard(String studentId) {
 //		System.out.println("\nREPORT CARD FOR STUDENT (STUDENT ID: "+studentId+")\n");
 //		Student currStudent = UserData.students.get(studentId);
 //		HashMap<String, RegisteredCourse> hmp = currStudent.getRegCourses();
@@ -98,4 +137,3 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 //		s.get
 //		System.out.println("Report Card Generated!");
 //	}
-

@@ -2,7 +2,9 @@
  * 
  */
 package com.signify.jdbc;
+
 import com.signify.exception.*;
+import com.signify.utils.DBUtils;
 import com.signify.bean.*;
 import com.signify.constants.SQLConstants;
 
@@ -18,16 +20,16 @@ import java.util.*;
  * @author dp201
  *
  */
-public class AdminDAOImplementation {
+public class AdminDAOImplementation implements AdminDAOInterface {
 
-	public void addAdmin(Admin newAdmin) {
+	public void addAdmin(Admin newAdmin) throws UserAlreadyExistException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_admin = null;
-		
+
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			
+			conn = DBUtils.getConnection();
+
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, newAdmin.getUserId());
 			stmt.setString(2, newAdmin.getName());
@@ -44,35 +46,21 @@ public class AdminDAOImplementation {
 			stmt_admin.executeUpdate();
 			stmt_admin.close();
 
-			conn.close();
+			;
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			throw new UserAlreadyExistException(newAdmin.getUserId());
 		}
+
 	}
 
-	public void addProfessor(Professor p) {
+	public void addProfessor(Professor p) throws ProfessorNotAddedException, UserAlreadyExistException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_professor = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 
-			String sql = "insert into user (userid, username, password, address, doj, roleid) values(?,?,?,?,?,?)";
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, p.getUserId());
 			stmt.setString(2, p.getName());
@@ -92,39 +80,46 @@ public class AdminDAOImplementation {
 			stmt_professor.executeUpdate();
 			stmt_professor.close();
 
-			conn.close();
+			;
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 
-	public void addCourse(Course c) {
+	public void addCourse(Course c) throws AddCourseException, ProfessorNotFoundException, CourseFoundException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_professor = null;
+		PreparedStatement stmt_get_professor = null;
+		PreparedStatement stmt_get_course = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-
+			conn = DBUtils.getConnection();
+	
+			stmt_get_course = conn.prepareStatement(SQLConstants.CHECK_COURSE_IN_CATALOG);
+			stmt_get_course.setString(1, c.getCourseCode());
+			ResultSet rs1 = stmt_get_course.executeQuery();
+			if(rs1.next())
+			{
+				throw new CourseFoundException(c.getCourseCode());
+			}
+			stmt_get_course.close();
+			
+			stmt_get_professor = conn.prepareStatement(SQLConstants.GET_PROFESSOR);
+			stmt_get_professor.setString(1, c.getInstructor());
+			ResultSet rs2 = stmt_get_professor.executeQuery();
+			
+			if(!(rs2.next()))
+			{
+				throw new ProfessorNotFoundException(c.getInstructor());
+			}		
+			stmt_get_professor.close();
 			stmt = conn.prepareStatement(SQLConstants.INSERT_COURSEINCATALOG);
 			stmt.setString(1, c.getCourseCode());
 			stmt.setString(2, c.getName());
 			stmt.setInt(3, c.getNumStudents());
 			stmt.setString(4, c.getInstructor());
 			stmt.setDouble(5, c.getFee());
+			stmt.setInt(6, c.getSemester());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -133,131 +128,99 @@ public class AdminDAOImplementation {
 			stmt_professor.setString(2, c.getInstructor());
 			stmt_professor.executeUpdate();
 			stmt_professor.close();
-
-			conn.close();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			throw new AddCourseException(c.getCourseCode());
+		}
+		catch(ProfessorNotFoundException e)
+		{
+			throw new ProfessorNotFoundException(c.getInstructor());
+		}
+		catch(CourseFoundException e)
+		{
+			throw new CourseFoundException(c.getCourseCode());
 		}
 	}
 
-	public void removeCourse(String coursecode) {
+	public void removeCourse(String coursecode) throws CourseNotFoundException, CourseNotDeletedException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.REMOVE_COURSE_FROM_CATALOG);
 			stmt.setString(1, coursecode);
-			stmt.executeUpdate();
+			int row = stmt.executeUpdate();
 			stmt.close();
-			conn.close();
+
+			if (row == 0) {
+				throw new CourseNotFoundException(coursecode);
+			}
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+
+			throw new CourseNotDeletedException(coursecode);
 		}
 	}
 
-	public void assignProfessorToCourse(String professorid, String courseCode) {
+	public void assignProfessorToCourse(String professorid, String courseCode) throws CourseNotAssignedToProfessorException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_course = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-
+			conn = DBUtils.getConnection();		
+			
 			stmt = conn.prepareStatement(SQLConstants.UPDATE_COURSEOF_PROFESSOR);
 			stmt.setString(1, courseCode);
 			stmt.setString(2, professorid);
-			stmt.executeUpdate();
+			int rowAffected_p = stmt.executeUpdate();
 			stmt.close();
-
+			if(rowAffected_p == 0)
+			{
+				throw new CourseNotAssignedToProfessorException(courseCode, professorid);
+			}			
+			
 			stmt_course = conn.prepareStatement(SQLConstants.UPDATE_PROFESSORIN_CATALOG);
 			stmt_course.setString(1, professorid);
 			stmt_course.setString(2, courseCode);
+			int rowAffected_c = stmt_course.executeUpdate();
 			stmt_course.close();
+			if(rowAffected_c == 0)
+			{
+				throw new CourseNotAssignedToProfessorException(courseCode, professorid);
+			}
 
-			conn.close();
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			throw new CourseNotAssignedToProfessorException(courseCode, professorid);
 		}
 	}
 
-	public Course viewCourseDetails(String courseCode) {
+	public Course viewCourseDetails(String courseCode) throws CourseNotFoundException {
 		Course c = new Course();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 
 			stmt = conn.prepareStatement(SQLConstants.SELECT_CATALOG_WITH_COURSECODE);
 			stmt.setString(1, courseCode);
 			ResultSet rs = stmt.executeQuery();
-
-			while (rs.next()) {
-				c.setCourseCode(rs.getString("coursecode"));
-				c.setName(rs.getString("coursename"));
-				c.setNumStudents(rs.getInt("numstudents"));
-				c.setInstructor(rs.getString("instructor"));
-				c.setFee(rs.getDouble("coursefee"));
-			}
+			if (!rs.next()) 
+				throw new CourseNotFoundException(courseCode);
+//			} else {
+				while (rs.next()) {
+					c.setCourseCode(rs.getString("coursecode"));
+					c.setName(rs.getString("coursename"));
+					c.setNumStudents(rs.getInt("numstudents"));
+					c.setInstructor(rs.getString("instructor"));
+					c.setFee(rs.getDouble("coursefee"));
+					c.setSemester(rs.getInt("semester"));
+				}
+//			}
 			rs.close();
 			stmt.close();
-			conn.close();
+
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			throw new CourseNotFoundException(courseCode);
 		}
 		return c;
 	}
@@ -267,7 +230,7 @@ public class AdminDAOImplementation {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 
 			stmt = conn.prepareStatement(SQLConstants.SELECT_CATALOG);
 			ResultSet rs = stmt.executeQuery();
@@ -283,23 +246,11 @@ public class AdminDAOImplementation {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return cs;
 	}
@@ -309,7 +260,7 @@ public class AdminDAOImplementation {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SELECT_UNAPPROVED);
 			stmt.setInt(1, 0);
 			ResultSet rs = stmt.executeQuery();
@@ -325,23 +276,11 @@ public class AdminDAOImplementation {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return uas;
 	}
@@ -350,73 +289,47 @@ public class AdminDAOImplementation {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SET_ALLAPPROVED);
 			stmt.setInt(1, 1);
 			stmt.executeUpdate();
 			stmt.close();
-			conn.close();
+			;
 		} catch (
 
 		SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 
-	public void approveStudentById(String studentid) {
+	public void approveStudentById(String studentid) throws StudentNotFoundForVerificationException {
 		System.out.println(studentid);
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SET_APPROVEDBYID);
 			stmt.setInt(1, 1);
 			stmt.setString(2, studentid);
-			stmt.executeUpdate();
+			int row = stmt.executeUpdate();
 			stmt.close();
-			conn.close();
-		} catch (
 
-		SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
+			if (row == 0) {
+				throw new StudentNotFoundForVerificationException(studentid);
 			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+		} catch (SQLException se) {
+			throw new StudentNotFoundForVerificationException(studentid);
 		}
-
 	}
 
 	public List<Admin> viewAdmins() {
-		List<Admin> la = new ArrayList<Admin>(); 
+		List<Admin> la = new ArrayList<Admin>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SELECT_ADMINS);
 
 			ResultSet rs = stmt.executeQuery();
@@ -430,40 +343,29 @@ public class AdminDAOImplementation {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return la;
 	}
 
 	public List<Professor> viewProfessors() {
+
 		List<Professor> lp = new ArrayList<Professor>();
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SELECT_PROFESSORS);
 
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				
+
 				Professor p = new Professor();
 				p.setUserId(rs.getString("professorid"));
 				p.setName(rs.getString("professorname"));
@@ -476,29 +378,17 @@ public class AdminDAOImplementation {
 			System.out.println();
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return lp;
 	}
 
-	public double calculateCpi(String studentid) {
-		
+	public double calculateCpi(String studentid) throws StudentNotRegisteredException {
+
 		String grade;
 		double cgpa = 0.0, cpi = 0.0;
 		int n = 0;
@@ -506,11 +396,15 @@ public class AdminDAOImplementation {
 		PreparedStatement stmt = null;
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.SELECT_GRADES);
 			stmt.setString(1, studentid);
 
 			ResultSet rs = stmt.executeQuery();
+			if(!rs.next())
+			{
+				throw new StudentNotRegisteredException(studentid);
+			}
 
 			while (rs.next()) {
 				grade = rs.getString("grade");
@@ -538,25 +432,21 @@ public class AdminDAOImplementation {
 			cpi = cgpa / n;
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+			throw new StudentNotRegisteredException(studentid);
 		}
+		catch (StudentNotRegisteredException e) {
+			throw new StudentNotRegisteredException(studentid);
+		}
+		System.out.println(cpi);
 		return cpi;
+	}
+
+	@Override
+	public void generateReportCard(String studentId) throws StudentNotRegisteredException {
+		// TODO Auto-generated method stub
+
 	}
 }

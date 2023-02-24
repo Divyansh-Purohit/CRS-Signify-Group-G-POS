@@ -18,20 +18,34 @@ public class CRSProfessorApplicationMenu {
 		while(true)
 		{
 			System.out.println("PRESS 1 FOR VIEWING ENROLLED STUDENTS\nPRESS 2 TO ADD GRADES\nPRESS 3 TO LOGOUT\n");
-			int choice = sc.nextInt();
+			int choice = 0;
+			try {
+				choice = sc.nextInt();
+			}
+			catch (InputMismatchException e) {
+				sc.nextLine();
+				choice = 0;
+			}
 			ProfessorInterface ps = new ProfessorServiceOperation();
-//			ProfessorDAOImplementation pdi = new ProfessorDAOImplementation();
 			switch(choice)
 			{
 				case 1:
 				{
-					System.out.println("\nLIST OF ENROLLED STUDENTS\n");
 					List<Student> students = ps.viewEnrolledStudents(professorId);
-					System.out.println("STUDENT ID");
-					for (Student i : students) {
-						System.out.println(i.getStudentid());
+					if(!(students == null))
+					{
+						if(students.size() == 0)
+						{
+							System.out.println("\nNO STUDENT HAS ENROLLED IN YOUR COURSE!\n");
+							break;
+						}
+						System.out.println("\nLIST OF ENROLLED STUDENTS\n");
+						System.out.println("STUDENT ID");
+						for (Student i : students) {
+							System.out.println(i.getStudentid());
+						}
+						System.out.println();
 					}
-					System.out.println();
 					break;
 				}
 				case 2:
@@ -41,8 +55,7 @@ public class CRSProfessorApplicationMenu {
 					String studentid = sc.nextLine();
 					System.out.print("Enter Grade: ");
 					String grade = sc.nextLine();
-					System.out.println("NGG"+studentid+""+grade);
-					System.out.println("\nSTUDENT HAS BEEN GRADED!\n");
+					ps.addGrades(professorId, studentid, grade);
 					break;
 				}
 				case 3:

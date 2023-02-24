@@ -9,7 +9,7 @@ public class UserAlreadyExistException extends Exception {
 
 
 	public String getMessage() {
-		return "userId: " + userId + " already exist";
+		return "\nUSERNAME  ALREADY EXISTS!\n";
 	}
 }
 

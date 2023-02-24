@@ -20,6 +20,10 @@ import com.signify.bean.Payment;
 import com.signify.bean.RegisteredCourse;
 import com.signify.bean.Student;
 import com.signify.constants.SQLConstants;
+import com.signify.exception.CourseLimitExceedException;
+import com.signify.exception.CourseNotFoundException;
+import com.signify.exception.SemesterNotRegisteredException;
+import com.signify.exception.StudentNotRegisteredException;
 import com.signify.utils.DBUtils;
 
 /**
@@ -35,7 +39,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		PreparedStatement stmt_student = null;
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			String doj = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 			stmt.setString(1, student.getUserId());
@@ -61,25 +65,37 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt_student.setInt(11, 0);
 			stmt_student.executeUpdate();
 			stmt_student.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
+	}
+
+	public void semesterRegister(String studentid, int sem) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		String student_id = "";
+
+		try {
+			conn = DBUtils.getConnection();
+			stmt = conn.prepareStatement(SQLConstants.SEMESTER_REGISTRATION);
+			stmt.setInt(1, sem);
+			stmt.setString(2, studentid);
+			int row = stmt.executeUpdate();
+			if (row == 0) {
+				throw new StudentNotRegisteredException(studentid);
+			}
+			stmt.close();
+
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public String getStudentId(String userid) {
@@ -88,7 +104,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		String student_id = "";
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.GET_STUDENT_ID);
 			stmt.setString(1, userid);
 			ResultSet rs = stmt.executeQuery();
@@ -97,26 +113,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
-
 		return student_id;
 	}
 
@@ -127,7 +129,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		int isapproved = 0;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.GET_ISAPPROVED_STATUS);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
@@ -136,38 +138,39 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return isapproved;
 	}
 
-	public List<Course> getAvailableCourses() {
+	public List<Course> getAvailableCourses(String studentid) throws SemesterNotRegisteredException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		PreparedStatement smt = null;
+
 		List<Course> ac = new ArrayList<Course>();
 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
-			stmt = conn.prepareStatement(SQLConstants.GET_AVAILABLE_COURSES);
+			conn = DBUtils.getConnection();
+			smt = conn.prepareStatement(SQLConstants.GET_SEMESTER);
+			smt.setString(1, studentid);
+			ResultSet rs1 = smt.executeQuery();
+			int sem = -1;
+			while (rs1.next()) {
+				sem = rs1.getInt("semester");
+			}
+			if (sem == 0) {
+				throw new SemesterNotRegisteredException(studentid);
+			}
 
+			stmt = conn.prepareStatement(SQLConstants.GET_AVAILABLE_COURSES);
+			stmt.setInt(1, sem);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Course c = new Course();
@@ -179,35 +182,62 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+		} catch (SemesterNotRegisteredException e) {
+			throw new SemesterNotRegisteredException(studentid);
 		}
 		return ac;
 	}
 
-	public void addCourse(String studentid, String courseCode, int type) {
+	public void addCourse(String studentid, String courseCode, int type) throws CourseLimitExceedException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		int num = -1, sem = 8;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+
+		PreparedStatement smt1 = null;
+		PreparedStatement smt2 = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
+
+			AdminDAOImplementation adi = new AdminDAOImplementation();
+			adi.viewCourseDetails(courseCode);
+
+			stmt1 = conn.prepareStatement(SQLConstants.GET_SEMESTER);
+			stmt1.setString(1, studentid);
+			ResultSet rs1 = stmt1.executeQuery();
+			int sem = 0;
+			while (rs1.next()) {
+				sem = rs1.getInt("semester");
+			}
+
+			int c1 = 0, c2 = 0;
+			if (type == 1) {
+				smt1 = conn.prepareStatement(SQLConstants.GET_NUM_TYPE_1_COURSES);
+				smt1.setString(1, studentid);
+				ResultSet rs_1 = smt1.executeQuery();
+				while (rs_1.next()) {
+					c1 = rs_1.getInt("count(*)");
+				}
+				if (c1 == 4 && type == 1) {
+					throw new CourseLimitExceedException(studentid);
+				}
+			}
+			else if (type == 2) {
+				smt2 = conn.prepareStatement(SQLConstants.GET_NUM_TYPE_2_COURSES);
+				smt2.setString(1, studentid);
+				ResultSet rs_2 = smt2.executeQuery();
+				while (rs_2.next()) {
+					c2 = rs_2.getInt("count(*)");
+				}
+				if (c2 == 2) {
+					throw new CourseLimitExceedException(studentid);
+				}
+			}
+
 			String sql = "insert into registeredcourse (coursecode, semester, studentId, grade, type) values(?,?,?,?,?)";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, courseCode);
@@ -218,61 +248,45 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt.executeUpdate();
 			stmt.close();
 
+		} catch (CourseLimitExceedException e) {
+			throw new CourseLimitExceedException(studentid);
 		} catch (SQLException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
+			System.out.println("\nYOU ARE ALREADY REGISTERED FOR THIS COURSE!\n");
+		}
+
+		catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 
 	}
 
-	public void dropCourse(String studentid, String courseId) {
+	public void dropCourse(String studentid, String courseId) throws CourseNotFoundException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_1 = null;
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.DELETE_USER_COURSE);
 			stmt.setString(1, courseId);
 			stmt.setString(2, studentid);
-			stmt.executeUpdate();
+			int row = stmt.executeUpdate();
+
+			if (row == 0) {
+				throw new CourseNotFoundException(courseId);
+			}
 			stmt.close();
 
 			stmt_1 = conn.prepareStatement(SQLConstants.UPADTE_CATALOG_AFTER_STUDENT);
 			stmt_1.setString(1, studentid);
 			stmt_1.executeUpdate();
 			stmt_1.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
+		} catch (CourseNotFoundException e) {
+			throw new CourseNotFoundException(courseId);
 		}
 
 	}
@@ -284,7 +298,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		List<Grades> grades = new ArrayList<Grades>();
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.VIEW_GRADES);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
@@ -306,24 +320,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return grades;
 	}
@@ -334,7 +336,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		List<RegisteredCourse> rcourses = new ArrayList<RegisteredCourse>();
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.VIEW_REGISTERED_COURSES);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
@@ -355,24 +357,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			}
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return rcourses;
 	}
@@ -382,7 +372,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		PreparedStatement stmt = null;
 		List<Course> courses = new ArrayList<Course>();
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.GET_FEES);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
@@ -404,24 +394,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 			rs.close();
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return courses;
 	}
@@ -431,7 +409,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CARD);
 			stmt.setString(1, p.getReferencedId());
 			stmt.setString(2, p.getStudentId());
@@ -453,24 +431,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY CARD\n");
 
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 
@@ -480,7 +446,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_NETBANK);
 			stmt.setString(1, p.getReferencedId());
 			stmt.setString(2, p.getStudentId());
@@ -502,24 +468,11 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY NET BANKING\n");
 
 			stmt.close();
-			conn.close();
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 
@@ -530,7 +483,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		try {
 
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CHEQUE);
 			stmt.setString(1, p.getReferencedId());
 			stmt.setString(2, p.getStudentId());
@@ -549,24 +502,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY CHEQUE\n");
 
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 
@@ -577,7 +518,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
-			conn = DriverManager.getConnection(helper.Ids.DB_URL, helper.Ids.USER, helper.Ids.PASS);
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CASH);
 			stmt.setString(1, p.getReferencedId());
 			stmt.setString(2, p.getStudentId());
@@ -596,24 +537,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY CASH\n");
 
 			stmt.close();
-			conn.close();
+			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException se2) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 	}
 }

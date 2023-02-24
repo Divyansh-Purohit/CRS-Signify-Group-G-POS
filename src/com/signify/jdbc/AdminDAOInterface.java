@@ -1,7 +1,6 @@
 package com.signify.jdbc;
-
 import java.util.List;
-
+import com.signify.exception.*;
 import com.signify.bean.Admin;
 import com.signify.bean.Course;
 import com.signify.bean.Professor;
@@ -16,28 +15,28 @@ public interface AdminDAOInterface{
 
 	public void approveAllStudents();
 	
-	public void approveStudentById();
+	public void approveStudentById(String studentid) throws StudentNotFoundForVerificationException;
 	
 	public List<Student> listOfUnapprovedStudents();
 		
-	public void addAdmin(Admin a);
+	public void addAdmin(Admin a) throws UserAlreadyExistException;
 	
 	public List<Admin> viewAdmins();
 	
 	public List<Professor> viewProfessors();
 	
-	public void addProfessor(Professor p);
+	public void addProfessor(Professor p) throws ProfessorNotAddedException, UserAlreadyExistException;
 	
-	public void assignProfessorToCourse(String professorid, String courseCode);
+	public void assignProfessorToCourse(String professorid, String courseCode) throws CourseNotAssignedToProfessorException;
 	
-	public void addCourse(Course c);
+	public void addCourse(Course c) throws AddCourseException, ProfessorNotFoundException, CourseFoundException;
 	
-	public void removeCourse(String courseCode);
+	public void removeCourse(String courseCode) throws CourseNotFoundException, CourseNotDeletedException;
 	
-	public void viewCourseDetails(String coursecode);
+	public Course viewCourseDetails(String coursecode) throws CourseNotFoundException;
 	
-	public void calculateCpi(String studentid);
+	public double calculateCpi(String studentid) throws StudentNotRegisteredException;
 	
-	public void generateReportCard(String studentId);
+	public void generateReportCard(String studentId) throws StudentNotRegisteredException;
 	
 }
