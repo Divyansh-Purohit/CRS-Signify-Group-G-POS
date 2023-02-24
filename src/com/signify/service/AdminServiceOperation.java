@@ -109,7 +109,7 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 		double cpi = 0.0;
 		try {
 			cpi = adi.calculateCpi(studentid);
-			System.out.print("\nTHE CPI FOR STUDENT WITH STUDENT ID \""+studentid+"\" IS "+cpi+"\n");
+			System.out.print("\nTHE CPI FOR STUDENT WITH STUDENT ID \""+studentid+"\" IS "+cpi+"\n\n");
 		} catch (StudentNotRegisteredException e) {
 			System.out.println(e.getMessage());
 		}

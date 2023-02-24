@@ -24,7 +24,7 @@ public interface StudentInterface {
 	public void addCourse(String studentId, String courseCode, int type);
 	public void dropCourse(String studentId, String courseId);		
 	public List<RegisteredCourse> viewRegisterCourses(String studentId);
-	public void viewGrades(String studentId);
+	public List<Grades> viewGrades(String studentId);
 	public List<Course> getFees(String studentId);
 	public void payFeesByCard(OnlinePayment onp, Payment p);
 	public void payFeesByNetBanking(OnlinePayment onp, Payment p);

@@ -39,9 +39,9 @@ public class CRSAdminApplicationMenu {
 			switch (choice) {
 			case 1: {
 				List<Student> students = as.listOfUnapprovedStudents();
-				System.out.println("\nLIST OF UNAPPROVED STUDENTS\n\nUSER ID STUDENT ID STUDENT NAME\n");
+				System.out.println("\nLIST OF UNAPPROVED STUDENTS\n\n\t\tUSER ID\t\t\t\tSTUDENT ID\t\t\tSTUDENT NAME\n");
 				for (Student x : students) {
-					System.out.println(x.getUserId() + "\t" + x.getStudentid() + "\t" + x.getName());
+					System.out.printf("%-40s %-40s %-40s %n" , x.getUserId() , x.getStudentid() , x.getName());
 
 				}
 				outer: while (true) {
