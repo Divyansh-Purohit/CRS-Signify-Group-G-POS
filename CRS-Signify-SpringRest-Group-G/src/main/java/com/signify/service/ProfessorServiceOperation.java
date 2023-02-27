@@ -3,7 +3,6 @@
  */
 package com.signify.service;
 import com.signify.bean.*;
-import com.signify.collection.UserData;
 import com.signify.exception.ProfessorNotTeachingException;
 import com.signify.exception.StudentNotRegisteredException;
 import com.signify.jdbc.ProfessorDAOImplementation;

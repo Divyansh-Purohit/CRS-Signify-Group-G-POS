@@ -3,17 +3,13 @@
  */
 package com.signify.jdbc;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.signify.constants.SQLConstants;
 import com.signify.exception.UserNotFoundException;
-import com.signify.jdbc.UserDAOInterface;
 import com.signify.utils.DBUtils;
-
-import java.util.Scanner;
 public class UserDAOImplementation implements UserDAOInterface{
 	
 	/**
@@ -28,7 +24,7 @@ public class UserDAOImplementation implements UserDAOInterface{
 				
 		try{
 			   
-			   conn = DriverManager.getConnection(helper.Ids.DB_URL,helper.Ids.USER,helper.Ids.PASS);
+			   conn = DBUtils.getConnection();
 			   stmt = conn.prepareStatement(SQLConstants.LOGIN_USER);
 			   stmt.setString(1, username);
 			   stmt.setString(2, password);
