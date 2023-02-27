@@ -1,9 +1,12 @@
 package com.signify.bean;
+
+import java.io.Serializable;
 import java.time.LocalDate;
-public class Admin extends User {
+
+public class Admin extends User implements Serializable {
 
 	private String adminName;
-	
+
 	/**
 	 * 
 	 * Getter setter for admin name
@@ -14,5 +17,5 @@ public class Admin extends User {
 
 	public void setAdminName(String adminName) {
 		this.adminName = adminName;
-	}	
+	}
 }

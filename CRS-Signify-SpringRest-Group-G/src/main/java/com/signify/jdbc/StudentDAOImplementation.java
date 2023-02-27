@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import org.springframework.stereotype.Repository;
+
 import com.signify.bean.Course;
 import com.signify.bean.Grades;
 import com.signify.bean.OfflinePayment;
@@ -30,6 +33,8 @@ import com.signify.utils.DBUtils;
  * @author dp201
  *
  */
+
+@Repository
 public class StudentDAOImplementation implements StudentDAOInterface {
 	/**
 	 * method to register a new student
@@ -72,14 +77,15 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Method to do semester registration
+	 * 
+	 * @throws StudentNotRegisteredException
 	 */
-	public void semesterRegister(String studentid, int sem) {
+	public void semesterRegister(String studentid, int sem) throws StudentNotRegisteredException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		String student_id = "";
@@ -97,11 +103,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 	}
+
 	/**
 	 * Method to get studentid
 	 */
@@ -124,11 +129,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+
+		System.out.println("student id is -> " + student_id);
 		return student_id;
 	}
+
 	/**
 	 * Method to get admin approval status
 	 */
@@ -153,12 +159,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return isapproved;
 	}
-	
+
 	/**
 	 * Method to view list of all available courses
 	 */
@@ -204,11 +208,15 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 		return ac;
 	}
+
 	/**
 	 * Method to add a new course
+	 * 
+	 * @throws CourseNotFoundException
 	 */
 
-	public void addCourse(String studentid, String courseCode, int type) throws CourseLimitExceedException {
+	public void addCourse(String studentid, String courseCode, int type)
+			throws CourseLimitExceedException, CourseNotFoundException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt1 = null;
@@ -242,8 +250,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 				if (c1 == 4 && type == 1) {
 					throw new CourseLimitExceedException(studentid);
 				}
-			}
-			else if (type == 2) {
+			} else if (type == 2) {
 				smt2 = conn.prepareStatement(SQLConstants.GET_NUM_TYPE_2_COURSES);
 				smt2.setString(1, studentid);
 				ResultSet rs_2 = smt2.executeQuery();
@@ -265,17 +272,12 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt.executeUpdate();
 			stmt.close();
 
-		} catch (CourseLimitExceedException e) {
-			throw new CourseLimitExceedException(studentid);
 		} catch (SQLException se) {
 			System.out.println("\nYOU ARE ALREADY REGISTERED FOR THIS COURSE!\n");
 		}
 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
 	}
+
 	/**
 	 * Method to drop a course
 	 */
@@ -310,6 +312,7 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		}
 
 	}
+
 	/**
 	 * Method to view grades of registered courses
 	 */
@@ -325,10 +328,8 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			stmt = conn.prepareStatement(SQLConstants.VIEW_GRADES);
 			stmt.setString(1, studentid);
 			ResultSet rs = stmt.executeQuery();
-			if (!(rs.next())) {
-				System.out.println("\nNO COURSES FOUND!\n");
-			} else {
-				while (rs.next()) {
+			if (rs.next() == true) {
+				do {
 					String cc = rs.getString("coursecode");
 					String cn = rs.getString("coursename");
 					String grade = rs.getString("grade");
@@ -337,19 +338,19 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 					g.setCourseName(cn);
 					g.setGrade(grade);
 					grades.add(g);
-				}
+				} while (rs.next());
+			} else {
+				System.out.println("No Course Found");
 			}
 			rs.close();
 			stmt.close();
-			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return grades;
 	}
+
 	/**
 	 * Method to view list of registered courses
 	 */
@@ -384,11 +385,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return rcourses;
 	}
+
 	/**
 	 * Method to view payable fees
 	 */
@@ -424,28 +424,26 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return courses;
 	}
-	
+
 	/**
 	 * Method to pay fees by card
 	 */
 
 	@Override
-	public void payFeesByCard(OnlinePayment onp, Payment p) {
+	public void payFeesByCard(OnlinePayment onp) {
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 		try {
 			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CARD);
-			stmt.setString(1, p.getReferencedId());
-			stmt.setString(2, p.getStudentId());
-			stmt.setString(3, p.getMode());
+			stmt.setString(1, onp.getReferencedId());
+			stmt.setString(2, onp.getStudentId());
+			stmt.setString(3, onp.getMode());
 			stmt.setString(4, "PAID");
-			stmt.setDouble(5, p.getAmount());
+			stmt.setDouble(5, onp.getAmount());
 
 			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CARD_ONLINE);
 			stmt_s.setString(1, onp.getReferencedId());
@@ -461,31 +459,28 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY CARD\n");
 
 			stmt.close();
-			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Method to pay fees by netbanking
 	 */
 	@Override
-	public void payFeesByNetBanking(OnlinePayment onp, Payment p) {
+	public void payFeesByNetBanking(OnlinePayment onp) {
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 
 		try {
 			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_NETBANK);
-			stmt.setString(1, p.getReferencedId());
-			stmt.setString(2, p.getStudentId());
-			stmt.setString(3, p.getMode());
+			stmt.setString(1, onp.getReferencedId());
+			stmt.setString(2, onp.getStudentId());
+			stmt.setString(3, onp.getMode());
 			stmt.setString(4, "PAID");
-			stmt.setDouble(5, p.getAmount());
+			stmt.setDouble(5, onp.getAmount());
 
 			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_NETBANK_ONLINE);
 			stmt_s.setString(1, onp.getReferencedId());
@@ -504,15 +499,14 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Method to pay fees by cheque
 	 */
 	@Override
-	public void payFeesByCheque(OfflinePayment ofp, Payment p) {
+	public void payFeesByCheque(OfflinePayment ofp) {
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
 
@@ -520,11 +514,11 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CHEQUE);
-			stmt.setString(1, p.getReferencedId());
-			stmt.setString(2, p.getStudentId());
-			stmt.setString(3, p.getMode());
+			stmt.setString(1, ofp.getReferencedId());
+			stmt.setString(2, ofp.getStudentId());
+			stmt.setString(3, ofp.getMode());
 			stmt.setString(4, "PAID");
-			stmt.setDouble(5, p.getAmount());
+			stmt.setDouble(5, ofp.getAmount());
 
 			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CHEQUE_OFFLINE);
 			stmt_s.setString(1, ofp.getReferencedId());
@@ -537,19 +531,17 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 			System.out.println("\nFEE PAID BY CHEQUE\n");
 
 			stmt.close();
-			;
 
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
+
 	/**
-	 *Method to pay fees by cash
+	 * Method to pay fees by cash
 	 */
 	@Override
-	public void payFeesByCash(OfflinePayment ofp, Payment p) {
+	public void payFeesByCash(OfflinePayment ofp) {
 
 		Connection conn = null;
 		PreparedStatement stmt = null, stmt_s = null;
@@ -557,11 +549,11 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 		try {
 			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SQLConstants.PAYMENT_CASH);
-			stmt.setString(1, p.getReferencedId());
-			stmt.setString(2, p.getStudentId());
-			stmt.setString(3, p.getMode());
+			stmt.setString(1, ofp.getReferencedId());
+			stmt.setString(2, ofp.getStudentId());
+			stmt.setString(3, ofp.getMode());
 			stmt.setString(4, "PAID");
-			stmt.setDouble(5, p.getAmount());
+			stmt.setDouble(5, ofp.getAmount());
 
 			stmt_s = conn.prepareStatement(SQLConstants.PAYMENT_CASH_OFFLINE);
 			stmt_s.setString(1, ofp.getReferencedId());
@@ -571,15 +563,10 @@ public class StudentDAOImplementation implements StudentDAOInterface {
 
 			stmt.executeUpdate();
 			stmt_s.execute();
-			System.out.println("\nFEE PAID BY CASH\n");
 
 			stmt.close();
-			;
-
 		} catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }
