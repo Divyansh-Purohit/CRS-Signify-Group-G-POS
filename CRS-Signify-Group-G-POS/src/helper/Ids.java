@@ -12,11 +12,11 @@ public class Ids {
 	public static int userId = 1002;
 	
 	public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	public static final String DB_URL = "jdbc:mysql://localhost/crs_g";
+	public static final String DB_URL = "jdbc:mysql://localhost/crs_database";
 
 	   //  Database credentials
 	public static final String USER = "root";
-	public static final String PASS = "Siddharth@1993";
+	public static final String PASS = "root";
 	
 	static {
 		try {
