@@ -19,17 +19,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.springframework.stereotype.Service;
+
 /**
  * @author dp201
  *
  */
+@Service
 public class AdminDAOImplementation implements AdminDAOInterface {
-/**
-	* This method adds a new admin to the database.
-	* 
-	* @param newAdmin the Admin object to be added to the database
-	* @throws UserAlreadyExistException if the user already exists in the database
- */
+	/**
+	 * This method adds a new admin to the database.
+	 * 
+	 * @param newAdmin the Admin object to be added to the database
+	 * @throws UserAlreadyExistException if the user already exists in the database
+	 */
 
 	public void addAdmin(Admin newAdmin) throws UserAlreadyExistException {
 		Connection conn = null;
@@ -41,7 +44,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, newAdmin.getUserId());
-			stmt.setString(2, newAdmin.getName());
+			stmt.setString(2, newAdmin.getUsername());
 			stmt.setString(3, newAdmin.getPassword());
 			stmt.setString(4, newAdmin.getAddress());
 			stmt.setDate(5, Date.valueOf(newAdmin.getDoj()));
@@ -51,7 +54,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 			stmt_admin = conn.prepareStatement(SQLConstants.REGISTER_ADMIN);
 			stmt_admin.setString(1, newAdmin.getUserId());
-			stmt_admin.setString(2, newAdmin.getName());
+			stmt_admin.setString(2, newAdmin.getUsername());
 			stmt_admin.executeUpdate();
 			stmt_admin.close();
 
@@ -61,13 +64,15 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 
 	}
-/**
-	* This method adds a new professor to the database.
-	* 
-	* @param p the Professor object to be added to the database
-	* @throws ProfessorNotAddedException  if the professor could not be added to the database
-	* @throws UserAlreadyExistException  if the user already exists in the database
- */
+
+	/**
+	 * This method adds a new professor to the database.
+	 * 
+	 * @param p the Professor object to be added to the database
+	 * @throws ProfessorNotAddedException if the professor could not be added to the
+	 *                                    database
+	 * @throws UserAlreadyExistException  if the user already exists in the database
+	 */
 
 	public void addProfessor(Professor p) throws ProfessorNotAddedException, UserAlreadyExistException {
 		Connection conn = null;
@@ -79,7 +84,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
 			stmt.setString(1, p.getUserId());
-			stmt.setString(2, p.getName());
+			stmt.setString(2, p.getUsername());
 			stmt.setString(3, p.getPassword());
 			stmt.setString(4, p.getAddress());
 			stmt.setDate(5, Date.valueOf(p.getDoj()));
@@ -89,7 +94,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 			stmt_professor = conn.prepareStatement(SQLConstants.REGISTER_PROFESSOR);
 			stmt_professor.setString(1, p.getUserId());
-			stmt_professor.setString(2, p.getName());
+			stmt_professor.setString(2, p.getUsername());
 			stmt_professor.setString(3, p.getDepartment());
 			stmt_professor.setString(4, p.getDepartment());
 			stmt_professor.setString(5, null);
@@ -101,16 +106,21 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			se.printStackTrace();
 		}
 	}
-/**
 
-	* Adds a course to the catalog and updates the professor's record if the course does not already exist
-	*
-	* @param c the course object to be added to the catalog
-	* @throws AddCourseException if an error occurs while adding the course to the catalog
-	* @throws ProfessorNotFoundException if the specified instructor is not found in the database
-	* @throws CourseFoundException if the specified course already exists in the catalog
-*/
-	public void addCourse(Course c) throws AddCourseException, ProfessorNotFoundException, CourseFoundException{
+	/**
+	 * 
+	 * Adds a course to the catalog and updates the professor's record if the course
+	 * does not already exist
+	 *
+	 * @param c the course object to be added to the catalog
+	 * @throws AddCourseException         if an error occurs while adding the course
+	 *                                    to the catalog
+	 * @throws ProfessorNotFoundException if the specified instructor is not found
+	 *                                    in the database
+	 * @throws CourseFoundException       if the specified course already exists in
+	 *                                    the catalog
+	 */
+	public void addCourse(Course c) throws AddCourseException, ProfessorNotFoundException, CourseFoundException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_professor = null;
@@ -118,24 +128,22 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		PreparedStatement stmt_get_course = null;
 		try {
 			conn = DBUtils.getConnection();
-	
+
 			stmt_get_course = conn.prepareStatement(SQLConstants.CHECK_COURSE_IN_CATALOG);
 			stmt_get_course.setString(1, c.getCourseCode());
 			ResultSet rs1 = stmt_get_course.executeQuery();
-			if(rs1.next())
-			{
+			if (rs1.next()) {
 				throw new CourseFoundException(c.getCourseCode());
 			}
 			stmt_get_course.close();
-			
+
 			stmt_get_professor = conn.prepareStatement(SQLConstants.GET_PROFESSOR);
 			stmt_get_professor.setString(1, c.getInstructor());
 			ResultSet rs2 = stmt_get_professor.executeQuery();
-			
-			if(!(rs2.next()))
-			{
+
+			if (!(rs2.next())) {
 				throw new ProfessorNotFoundException(c.getInstructor());
-			}		
+			}
 			stmt_get_professor.close();
 			stmt = conn.prepareStatement(SQLConstants.INSERT_COURSEINCATALOG);
 			stmt.setString(1, c.getCourseCode());
@@ -152,27 +160,25 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt_professor.setString(2, c.getInstructor());
 			stmt_professor.executeUpdate();
 			stmt_professor.close();
-			
+
 		} catch (SQLException se) {
 			se.printStackTrace();
 			throw new AddCourseException(c.getCourseCode());
-		}
-		catch(ProfessorNotFoundException e)
-		{
+		} catch (ProfessorNotFoundException e) {
 			throw new ProfessorNotFoundException(c.getInstructor());
-		}
-		catch(CourseFoundException e)
-		{
+		} catch (CourseFoundException e) {
 			throw new CourseFoundException(c.getCourseCode());
 		}
 	}
+
 	/**
-	* Method to remove course using SQL commands
-	* @param coursecode
-	* @throws CourseNotFoundException
-	* @throws CourseNotDeletedException
-	*/
-	
+	 * Method to remove course using SQL commands
+	 * 
+	 * @param coursecode
+	 * @throws CourseNotFoundException
+	 * @throws CourseNotDeletedException
+	 */
+
 	public void removeCourse(String coursecode) throws CourseNotFoundException, CourseNotDeletedException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -191,37 +197,38 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new CourseNotDeletedException(coursecode);
 		}
 	}
+
 	/**
-	* Method to assign professor to course
-	* @param professorid
-	* @param coursecode
-	* @throws CourseNotAssignedToProfessorException
-	*/
-	
-	public void assignProfessorToCourse(String professorid, String courseCode) throws CourseNotAssignedToProfessorException {
+	 * Method to assign professor to course
+	 * 
+	 * @param professorid
+	 * @param coursecode
+	 * @throws CourseNotAssignedToProfessorException
+	 */
+
+	public void assignProfessorToCourse(String professorid, String courseCode)
+			throws CourseNotAssignedToProfessorException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_course = null;
 		try {
-			conn = DBUtils.getConnection();		
-			
+			conn = DBUtils.getConnection();
+
 			stmt = conn.prepareStatement(SQLConstants.UPDATE_COURSEOF_PROFESSOR);
 			stmt.setString(1, courseCode);
 			stmt.setString(2, professorid);
 			int rowAffected_p = stmt.executeUpdate();
 			stmt.close();
-			if(rowAffected_p == 0)
-			{
+			if (rowAffected_p == 0) {
 				throw new CourseNotAssignedToProfessorException(courseCode, professorid);
-			}			
-			
+			}
+
 			stmt_course = conn.prepareStatement(SQLConstants.UPDATE_PROFESSORIN_CATALOG);
 			stmt_course.setString(1, professorid);
 			stmt_course.setString(2, courseCode);
 			int rowAffected_c = stmt_course.executeUpdate();
 			stmt_course.close();
-			if(rowAffected_c == 0)
-			{
+			if (rowAffected_c == 0) {
 				throw new CourseNotAssignedToProfessorException(courseCode, professorid);
 			}
 
@@ -229,12 +236,14 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new CourseNotAssignedToProfessorException(courseCode, professorid);
 		}
 	}
+
 	/**
-	* Method to view course details
-	* @param coursecode
-	* @throws CourseNotFoundException
-	* @return c
-	*/
+	 * Method to view course details
+	 * 
+	 * @param coursecode
+	 * @throws CourseNotFoundException
+	 * @return c
+	 */
 
 	public Course viewCourseDetails(String courseCode) throws CourseNotFoundException {
 		Course c = new Course();
@@ -246,18 +255,17 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt = conn.prepareStatement(SQLConstants.SELECT_CATALOG_WITH_COURSECODE);
 			stmt.setString(1, courseCode);
 			ResultSet rs = stmt.executeQuery();
-			if (!rs.next()) 
-				throw new CourseNotFoundException(courseCode);
-//			} else {
-				while (rs.next()) {
+			if (rs.next() == true) {
+				do {
 					c.setCourseCode(rs.getString("coursecode"));
 					c.setName(rs.getString("coursename"));
 					c.setNumStudents(rs.getInt("numstudents"));
 					c.setInstructor(rs.getString("instructor"));
 					c.setFee(rs.getDouble("coursefee"));
 					c.setSemester(rs.getInt("semester"));
-				}
-//			}
+				} while (rs.next());
+			}
+
 			rs.close();
 			stmt.close();
 
@@ -266,10 +274,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return c;
 	}
+
 	/**
-	* Method to view listed courses
-	* @return list of available courses
-	*/
+	 * Method to view listed courses
+	 * 
+	 * @return list of available courses
+	 */
 	public List<Course> viewCourses() {
 		List<Course> cs = new ArrayList<Course>();
 		Connection conn = null;
@@ -299,10 +309,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return cs;
 	}
+
 	/**
-	* Method to view list of unapproved students
-	* @return List of unapproved students
-	*/
+	 * Method to view list of unapproved students
+	 * 
+	 * @return List of unapproved students
+	 */
 
 	public List<Student> listOfUnapprovedStudents() {
 		List<Student> uas = new ArrayList<Student>();
@@ -318,7 +330,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 				Student c = new Student();
 				c.setUserId(rs.getString("user_id"));
-				c.setStudentid(rs.getString("student_id"));
+				c.setStudentId(rs.getString("student_id"));
 				c.setName(rs.getString("username"));
 
 				uas.add(c);
@@ -333,6 +345,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return uas;
 	}
+
 	/**
 	 * Approve all Students using SQL commands
 	 * 
@@ -356,12 +369,14 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			e.printStackTrace();
 		}
 	}
+
 	/**
-	* Method to approve student via student id
-	* @param studentid
-	* @throws StudentNotFoundForVerificationException
-	*/
-	
+	 * Method to approve student via student id
+	 * 
+	 * @param studentid
+	 * @throws StudentNotFoundForVerificationException
+	 */
+
 	public void approveStudentById(String studentid) throws StudentNotFoundForVerificationException {
 		System.out.println(studentid);
 		Connection conn = null;
@@ -381,10 +396,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			throw new StudentNotFoundForVerificationException(studentid);
 		}
 	}
+
 	/**
-	* Method to view listed admins
-	* @return list of admins
-	*/
+	 * Method to view listed admins
+	 * 
+	 * @return list of admins
+	 */
 
 	public List<Admin> viewAdmins() {
 		List<Admin> la = new ArrayList<Admin>();
@@ -399,7 +416,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			while (rs.next()) {
 				Admin a = new Admin();
 				a.setUserId(rs.getString("adminid"));
-				a.setName(rs.getString("adminname"));
+				a.setUsername(rs.getString("adminname"));
 				la.add(a);
 
 			}
@@ -413,10 +430,12 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return la;
 	}
+
 	/**
-	* Method to view listed professors
-	* @return list of professors
-	*/
+	 * Method to view listed professors
+	 * 
+	 * @return list of professors
+	 */
 
 	public List<Professor> viewProfessors() {
 
@@ -434,7 +453,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 				Professor p = new Professor();
 				p.setUserId(rs.getString("professorid"));
-				p.setName(rs.getString("professorname"));
+				p.setUsername(rs.getString("professorname"));
 				p.setDesignation(rs.getString("designation"));
 				p.setDepartment(rs.getString("department"));
 				p.setCourseTaught(rs.getString("course"));
@@ -452,12 +471,15 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		}
 		return lp;
 	}
+
 	/**
-	* Calculates the CPI (Cumulative Performance Index) of a student.
-	* @param studentid the ID of the student whose CPI is to be calculated
-	* @return the CPI of the student
-	* @throws StudentNotRegisteredException if the student is not registered in the system
-	*/
+	 * Calculates the CPI (Cumulative Performance Index) of a student.
+	 * 
+	 * @param studentid the ID of the student whose CPI is to be calculated
+	 * @return the CPI of the student
+	 * @throws StudentNotRegisteredException if the student is not registered in the
+	 *                                       system
+	 */
 
 	public double calculateCpi(String studentid) throws StudentNotRegisteredException {
 
@@ -473,8 +495,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt.setString(1, studentid);
 
 			ResultSet rs = stmt.executeQuery();
-			if(!rs.next())
-			{
+			if (!rs.next()) {
 				throw new StudentNotRegisteredException(studentid);
 			}
 
@@ -508,8 +529,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 
 		} catch (SQLException se) {
 			throw new StudentNotRegisteredException(studentid);
-		}
-		catch (StudentNotRegisteredException e) {
+		} catch (StudentNotRegisteredException e) {
 			throw new StudentNotRegisteredException(studentid);
 		}
 		return cpi;

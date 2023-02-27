@@ -51,7 +51,7 @@ public class UserRegistration {
 
 		User newUser = new User();
 		newUser.setUserId(userid);
-		newUser.setName(name);
+		newUser.setUsername(name);
 		newUser.setPassword(password);
 		newUser.setAddress(address);
 		newUser.setDoj(doj);

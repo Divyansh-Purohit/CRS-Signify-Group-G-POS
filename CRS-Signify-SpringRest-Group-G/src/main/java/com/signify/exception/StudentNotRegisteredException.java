@@ -30,7 +30,7 @@ public class StudentNotRegisteredException extends Exception{
 	 
 	 public String getMessage()
 	 {
-		 return "\nSTUDENT HAVING STUDENT ID \""+studentId+"\" IS NOT REGISTERED FOR YOUR COURSE!\n";
+		 return "Student having StudentId "+studentId+" is not registered for your course";
 	 }
 	 
 }

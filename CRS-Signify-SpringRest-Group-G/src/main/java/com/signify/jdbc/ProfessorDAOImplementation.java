@@ -1,18 +1,21 @@
 package com.signify.jdbc;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
 import com.signify.bean.Student;
 import com.signify.constants.SQLConstants;
 import com.signify.exception.ProfessorNotTeachingException;
 import com.signify.exception.StudentNotRegisteredException;
 import com.signify.utils.DBUtils;
 
+@Repository
 public class ProfessorDAOImplementation implements ProfessorDAOInterface {
 	/**
 	 * Method to view list of enrolled students

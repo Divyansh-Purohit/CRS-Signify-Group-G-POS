@@ -1,9 +1,12 @@
 package com.signify.bean;
-public class Professor extends User{
-	
+
+import java.io.Serializable;
+
+public class Professor extends User implements Serializable {
+
 	String department, designation;
 	String courseTaught;
-	
+
 	public String getCourseTaught() {
 		return courseTaught;
 	}
@@ -27,7 +30,5 @@ public class Professor extends User{
 	public void setDesignation(String designation) {
 		this.designation = designation;
 	}
-	
-	
 
 }
