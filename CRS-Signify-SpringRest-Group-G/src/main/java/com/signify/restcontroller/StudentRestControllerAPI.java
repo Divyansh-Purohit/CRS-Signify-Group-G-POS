@@ -38,13 +38,14 @@ public class StudentRestControllerAPI {
 		return studentService.getStudentId(st.getUserId());
 	}
 
-	@RequestMapping(value = "/getApprovedStatus", method = RequestMethod.POST)
+	@RequestMapping(value = "/getapprovedstatus", method = RequestMethod.POST)
 	public int getApprovedStatus(@RequestBody Student studentId) {
 		return studentService.getApprovedStatus(studentId.getStudentId());
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<String> registerStudent(@RequestBody Student student) {
+		System.out.println(student.getUsername());
 		studentService.register(student);
 		return new ResponseEntity<String>("Student Registered Successfully", HttpStatus.OK);
 	}

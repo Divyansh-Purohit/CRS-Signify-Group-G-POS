@@ -18,7 +18,8 @@ import com.signify.service.UserServiceOperation;
 @RestController
 public class UserRestControllerAPI {
 
-	private UserServiceOperation userService = new UserServiceOperation();
+	@Autowired
+	private UserServiceOperation userService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
