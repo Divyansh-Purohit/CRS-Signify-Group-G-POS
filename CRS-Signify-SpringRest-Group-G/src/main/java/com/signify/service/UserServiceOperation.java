@@ -4,6 +4,7 @@
 package com.signify.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.signify.bean.User;
@@ -16,14 +17,15 @@ import com.signify.jdbc.UserDAOImplementation;
  */
 
 @Service
+@Primary
 public class UserServiceOperation implements UserInterface {
 
-	
 	private UserDAOImplementation udi = new UserDAOImplementation();
 
 	/**
 	 * return details of login user
-	 * @throws UserNotFoundException 
+	 * 
+	 * @throws UserNotFoundException
 	 */
 	@Override
 	public User login(String username, String password) throws UserNotFoundException {
