@@ -1,4 +1,6 @@
 package com.signify.jdbc;
+
+import com.signify.bean.User;
 import com.signify.exception.UserNotFoundException;
 
 public interface UserDAOInterface {
@@ -10,7 +12,8 @@ public interface UserDAOInterface {
 	 * @return
 	 * @throws UserNotFoundException
 	 */
-	public String[] login(String username, String password) throws UserNotFoundException;
+	public User login(String username, String password) throws UserNotFoundException;
+
 	/**
 	 * Method to update password of a user
 	 * 
@@ -20,5 +23,5 @@ public interface UserDAOInterface {
 	 * @return
 	 * @throws UserNotFoundException
 	 */
-    public boolean updatePassword(String username,String oldPassword,String newPassword) throws UserNotFoundException;
+	public boolean updatePassword(String username, String oldPassword, String newPassword) throws UserNotFoundException;
 }

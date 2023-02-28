@@ -32,7 +32,7 @@ public class StudentRestControllerAPI {
 	@Autowired
 	private StudentServiceOperation studentService;
 
-	@RequestMapping(value = "/getStudentId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getstudentid", method = RequestMethod.POST)
 	@ResponseBody
 	public String getStudentId(@RequestBody User st) {
 		return studentService.getStudentId(st.getUserId());
