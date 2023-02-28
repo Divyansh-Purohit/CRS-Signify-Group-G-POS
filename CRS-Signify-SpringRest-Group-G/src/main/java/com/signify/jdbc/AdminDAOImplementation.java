@@ -58,7 +58,6 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt_admin.executeUpdate();
 			stmt_admin.close();
 
-			;
 		} catch (SQLException se) {
 			throw new UserAlreadyExistException(newAdmin.getUserId());
 		}

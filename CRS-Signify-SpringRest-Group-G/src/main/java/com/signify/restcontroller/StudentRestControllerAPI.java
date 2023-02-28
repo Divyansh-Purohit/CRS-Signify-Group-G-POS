@@ -26,23 +26,45 @@ import com.signify.exception.SemesterNotRegisteredException;
 import com.signify.exception.StudentNotRegisteredException;
 import com.signify.service.StudentServiceOperation;
 
+/**
+ * The Class StudentRestControllerAPI.
+ */
 @RestController
 public class StudentRestControllerAPI {
 
+	/** The student service. */
 	@Autowired
 	private StudentServiceOperation studentService;
 
+	/**
+	 * Gets the student id.
+	 *
+	 * @param st the st
+	 * @return the student id
+	 */
 	@RequestMapping(value = "/getstudentid", method = RequestMethod.POST)
 	@ResponseBody
 	public String getStudentId(@RequestBody User st) {
 		return studentService.getStudentId(st.getUserId());
 	}
 
+	/**
+	 * Gets the approved status.
+	 *
+	 * @param studentId the student id
+	 * @return the approved status
+	 */
 	@RequestMapping(value = "/getapprovedstatus", method = RequestMethod.POST)
 	public int getApprovedStatus(@RequestBody Student studentId) {
 		return studentService.getApprovedStatus(studentId.getStudentId());
 	}
 
+	/**
+	 * Register student.
+	 *
+	 * @param student the student
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<String> registerStudent(@RequestBody Student student) {
 		System.out.println(student.getUsername());
@@ -50,6 +72,12 @@ public class StudentRestControllerAPI {
 		return new ResponseEntity<String>("Student Registered Successfully", HttpStatus.OK);
 	}
 
+	/**
+	 * Semester registration.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/registersemester", method = RequestMethod.POST)
 	public ResponseEntity<String> semesterRegistration(@RequestBody Map<String, String> data) {
 		int semester = Integer.valueOf(data.get("semester"));
@@ -62,6 +90,12 @@ public class StudentRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Gets the available courses.
+	 *
+	 * @param data the data
+	 * @return the available courses
+	 */
 	@RequestMapping(value = "/availablecourses", method = RequestMethod.POST)
 	public ResponseEntity<List<Course>> getAvailableCourses(@RequestBody Map<String, String> data) {
 		try {
@@ -72,6 +106,12 @@ public class StudentRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Adds the course.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/registercourse", method = RequestMethod.POST)
 	public ResponseEntity<String> addCourse(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
@@ -86,6 +126,12 @@ public class StudentRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Drop course.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/dropcourse", method = RequestMethod.POST)
 	public ResponseEntity<String> dropCourse(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
@@ -99,6 +145,12 @@ public class StudentRestControllerAPI {
 		}
 	}
 
+	/**
+	 * View grades.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/grades", method = RequestMethod.POST)
 	public ResponseEntity<List<Grades>> viewGrades(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
@@ -106,6 +158,12 @@ public class StudentRestControllerAPI {
 		return new ResponseEntity<List<Grades>>(studentService.viewGrades(studentId), HttpStatus.OK);
 	}
 
+	/**
+	 * View registered course.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/registeredcourse", method = RequestMethod.POST)
 	public ResponseEntity<List<RegisteredCourse>> viewRegisteredCourse(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
@@ -113,6 +171,12 @@ public class StudentRestControllerAPI {
 		return new ResponseEntity<List<RegisteredCourse>>(studentService.viewRegisterCourses(studentId), HttpStatus.OK);
 	}
 
+	/**
+	 * Gets the fees.
+	 *
+	 * @param data the data
+	 * @return the fees
+	 */
 	@RequestMapping(value = "/fees", method = RequestMethod.POST)
 	public ResponseEntity<List<Course>> getFees(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
@@ -120,24 +184,48 @@ public class StudentRestControllerAPI {
 		return new ResponseEntity<List<Course>>(studentService.getFees(studentId), HttpStatus.OK);
 	}
 
+	/**
+	 * Pay fees by cash.
+	 *
+	 * @param ofp the ofp
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/payfeesbycash", method = RequestMethod.POST)
 	public ResponseEntity<String> payFeesByCash(@RequestBody OfflinePayment ofp) {
 		studentService.payFeesByCash(ofp);
 		return new ResponseEntity<String>("Fee Paid by cash Successfully", HttpStatus.OK);
 	}
 
+	/**
+	 * Pay fees by cheque.
+	 *
+	 * @param ofp the ofp
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/payfeesbycheque", method = RequestMethod.POST)
 	public ResponseEntity<String> payFeesByCheque(@RequestBody OfflinePayment ofp) {
 		studentService.payFeesByCheque(ofp);
 		return new ResponseEntity<String>("Fee paid by cheque Successfully", HttpStatus.OK);
 	}
 
+	/**
+	 * Pay fees by card.
+	 *
+	 * @param onp the onp
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/payfeesbycard", method = RequestMethod.POST)
 	public ResponseEntity<String> payFeesByCard(@RequestBody OnlinePayment onp) {
 		studentService.payFeesByCard(onp);
 		return new ResponseEntity<String>("Fee paid by card Successfully", HttpStatus.OK);
 	}
 
+	/**
+	 * Pay fees by netbanking.
+	 *
+	 * @param onp the onp
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/payfeesbynetbanking", method = RequestMethod.POST)
 	public ResponseEntity<String> payFeesByNetbanking(@RequestBody OnlinePayment onp) {
 		studentService.payFeesByNetBanking(onp);

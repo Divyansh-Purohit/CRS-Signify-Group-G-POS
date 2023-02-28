@@ -19,18 +19,34 @@ import com.signify.exception.ProfessorNotTeachingException;
 import com.signify.exception.StudentNotRegisteredException;
 import com.signify.service.ProfessorServiceOperation;
 
+/**
+ * The Class ProfessorRestControllerAPI.
+ */
 @RestController
 public class ProfessorRestControllerAPI {
 
+	/** The professor service. */
 	@Autowired
 	private ProfessorServiceOperation professorService;
 
+	/**
+	 * View enrolled students.
+	 *
+	 * @param data the data
+	 * @return the list
+	 */
 	@RequestMapping(produces = MediaType.APPLICATION_JSON, value = "/enrolledstudents", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Student> viewEnrolledStudents(@RequestBody Map<String, String> data) {
 		return professorService.viewEnrolledStudents(data.get("professorId"));
 	}
 
+	/**
+	 * Adds the grades.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/addgrades", method = RequestMethod.POST)
 	public ResponseEntity<String> addGrades(@RequestBody Map<String, String> data) {
 		String professorId = data.get("professorId");

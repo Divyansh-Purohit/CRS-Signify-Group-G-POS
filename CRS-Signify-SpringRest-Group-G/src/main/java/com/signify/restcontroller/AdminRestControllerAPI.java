@@ -28,12 +28,21 @@ import com.signify.exception.StudentNotRegisteredException;
 import com.signify.exception.UserAlreadyExistException;
 import com.signify.service.AdminServiceOperation;
 
+/**
+ * The Class AdminRestControllerAPI.
+ */
 @RestController
 public class AdminRestControllerAPI {
 
+	/** The admin service. */
 	@Autowired
 	private AdminServiceOperation adminService;
 
+	/**
+	 * Approve all students.
+	 *
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/approveall", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> approveAllStudents() {
@@ -41,6 +50,12 @@ public class AdminRestControllerAPI {
 		return new ResponseEntity<String>("All Students Approved Successfully", HttpStatus.OK);
 	}
 
+	/**
+	 * Approve student by id.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/approvebyid", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> approveStudentById(@RequestBody Map<String, String> data) {
@@ -52,12 +67,23 @@ public class AdminRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Gets the unapproved students.
+	 *
+	 * @return the unapproved students
+	 */
 	@RequestMapping(value = "/unapprovedstudents", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Student>> getUnapprovedStudents() {
 		return new ResponseEntity<List<Student>>(adminService.listOfUnapprovedStudents(), HttpStatus.OK);
 	}
 
+	/**
+	 * Adds the admin.
+	 *
+	 * @param admin the admin
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/addadmin", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> addAdmin(@RequestBody Admin admin) {
@@ -65,22 +91,38 @@ public class AdminRestControllerAPI {
 			adminService.addAdmin(admin);
 			return new ResponseEntity<String>("Admin Added Successfully", HttpStatus.OK);
 		} catch (UserAlreadyExistException e) {
-			return new ResponseEntity<String>("Student Id Not Found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("Admin Already Exists", HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	/**
+	 * View admins.
+	 *
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/admins", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Admin>> viewAdmins() {
 		return new ResponseEntity<List<Admin>>(adminService.viewAdmins(), HttpStatus.OK);
 	}
 
+	/**
+	 * Viewprofessors.
+	 *
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/professors", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Professor>> viewprofessors() {
 		return new ResponseEntity<List<Professor>>(adminService.viewProfessors(), HttpStatus.OK);
 	}
 
+	/**
+	 * Adds the professor.
+	 *
+	 * @param professor the professor
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/addprofessor", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> addProfessor(@RequestBody Professor professor) {
@@ -92,19 +134,31 @@ public class AdminRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Assign professor to course.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/assignprofessor", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> assignProfessorToCourse(@RequestBody Map<String, String> data) {
-		String professorId = data.get("professorID");
+		String professorId = data.get("professorId");
 		String courseCode = data.get("courseCode");
 		try {
 			adminService.assignProfessorToCourse(professorId, courseCode);
 			return new ResponseEntity<String>("Professor Assigned Successfully", HttpStatus.OK);
 		} catch (CourseNotAssignedToProfessorException e) {
-			return new ResponseEntity<String>("Professor Not Added ", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("Professor Not Assigned ", HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	/**
+	 * Adds the course.
+	 *
+	 * @param course the course
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/addcourse", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> addCourse(@RequestBody Course course) {
@@ -116,6 +170,12 @@ public class AdminRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Removes the course.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/removecourse", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> removeCourse(@RequestBody Map<String, String> data) {
@@ -128,6 +188,12 @@ public class AdminRestControllerAPI {
 		}
 	}
 
+	/**
+	 * View course details.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/coursedetails", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Course> viewCourseDetails(@RequestBody Map<String, String> data) {
@@ -139,7 +205,13 @@ public class AdminRestControllerAPI {
 		}
 	}
 
-	@RequestMapping(value = "/calculatecpi", method = RequestMethod.GET)
+	/**
+	 * Calculatecpi.
+	 *
+	 * @param data the data
+	 * @return the response entity
+	 */
+	@RequestMapping(value = "/calculatecpi", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Double> calculatecpi(@RequestBody Map<String, String> data) {
 		String studentId = data.get("studentId");
