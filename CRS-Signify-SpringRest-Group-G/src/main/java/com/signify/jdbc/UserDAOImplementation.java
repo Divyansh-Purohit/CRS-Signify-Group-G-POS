@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Repository;
 
+import com.signify.bean.User;
 import com.signify.constants.SQLConstants;
 import com.signify.exception.UserNotFoundException;
 import com.signify.utils.DBUtils;
@@ -20,11 +21,12 @@ public class UserDAOImplementation implements UserDAOInterface {
 	/**
 	 * Method to verify credentials and approve login
 	 */
-	public String[] login(String username, String password) throws UserNotFoundException {
+	public User login(String username, String password) throws UserNotFoundException {
 		String userid = "";
-		String roleid = "";
+		int roleid = -1;
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		User usr = new User();
 
 		try {
 
@@ -34,28 +36,27 @@ public class UserDAOImplementation implements UserDAOInterface {
 			stmt.setString(2, password);
 			ResultSet rs = stmt.executeQuery();
 
-			if (rs == null) {
+			if (rs.next() == true) {
+
+				do {
+					userid = rs.getString("userid");
+					roleid = rs.getInt("roleid");
+				} while (rs.next());
+			} else {
 				throw new UserNotFoundException(username);
 			}
 
-			while (rs.next()) {
-				userid = rs.getString("userid");
-				roleid = Integer.toString(rs.getInt("roleid"));
-			}
-
+			usr.setUserId(userid);
+			usr.setRoleid(roleid);
 			rs.close();
 			stmt.close();
-			;
 
 		}
 
 		catch (SQLException se) {
 			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		String[] ans = { String.valueOf(roleid), userid };
-		return ans;
+		return usr;
 	}
 
 	/**
