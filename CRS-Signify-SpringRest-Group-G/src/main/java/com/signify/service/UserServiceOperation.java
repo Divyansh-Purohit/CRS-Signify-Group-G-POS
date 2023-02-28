@@ -20,7 +20,8 @@ import com.signify.jdbc.UserDAOImplementation;
 @Primary
 public class UserServiceOperation implements UserInterface {
 
-	private UserDAOImplementation udi = new UserDAOImplementation();
+	@Autowired
+	private UserDAOImplementation udi;
 
 	/**
 	 * return details of login user

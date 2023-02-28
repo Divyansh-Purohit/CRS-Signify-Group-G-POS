@@ -38,7 +38,6 @@ public class StudentServiceOperation extends UserServiceOperation implements Stu
 	@Override
 	public void semesterRegister(String studentid, int sem) throws StudentNotRegisteredException {
 		sdi.semesterRegister(studentid, sem);
-//		System.out.println("\nSEMESTER SET TO " + sem + " FOR STUDENT ID \"" + studentid + "\"\n");
 	}
 
 	/**

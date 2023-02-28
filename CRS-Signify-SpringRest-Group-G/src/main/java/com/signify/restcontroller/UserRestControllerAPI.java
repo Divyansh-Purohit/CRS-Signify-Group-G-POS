@@ -15,12 +15,24 @@ import com.signify.bean.User;
 import com.signify.exception.UserNotFoundException;
 import com.signify.service.UserServiceOperation;
 
+/**
+ * The Class UserRestControllerAPI.
+ *
+ * @author Himanshu Yadav
+ */
 @RestController
 public class UserRestControllerAPI {
 
+	/** The user service. */
 	@Autowired
 	private UserServiceOperation userService;
 
+	/**
+	 * Login.
+	 *
+	 * @param usr the usr
+	 * @return the response entity
+	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<User> login(@RequestBody User usr) {
@@ -31,6 +43,12 @@ public class UserRestControllerAPI {
 		}
 	}
 
+	/**
+	 * Update password.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
 	@RequestMapping(value = "/updatepassword", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean updatePassword(@RequestBody Map<String, String> data) {
