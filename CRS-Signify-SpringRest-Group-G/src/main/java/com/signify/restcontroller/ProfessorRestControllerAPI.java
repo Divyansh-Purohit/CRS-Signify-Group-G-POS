@@ -20,6 +20,7 @@ import com.signify.exception.StudentNotRegisteredException;
 import com.signify.service.ProfessorServiceOperation;
 
 /**
+ * @author HIMANSHU YADAV
  * The Class ProfessorRestControllerAPI.
  */
 @RestController

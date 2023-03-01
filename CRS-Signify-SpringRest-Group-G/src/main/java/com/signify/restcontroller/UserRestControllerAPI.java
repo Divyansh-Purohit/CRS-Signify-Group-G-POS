@@ -16,9 +16,9 @@ import com.signify.exception.UserNotFoundException;
 import com.signify.service.UserServiceOperation;
 
 /**
+ * @author HIMANSHU YADAV
  * The Class UserRestControllerAPI.
  *
- * @author Himanshu Yadav
  */
 @RestController
 public class UserRestControllerAPI {

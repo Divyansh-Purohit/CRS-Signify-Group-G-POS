@@ -29,6 +29,7 @@ import com.signify.exception.UserAlreadyExistException;
 import com.signify.service.AdminServiceOperation;
 
 /**
+ * @author HIMANSHU YADAV
  * The Class AdminRestControllerAPI.
  */
 @RestController
