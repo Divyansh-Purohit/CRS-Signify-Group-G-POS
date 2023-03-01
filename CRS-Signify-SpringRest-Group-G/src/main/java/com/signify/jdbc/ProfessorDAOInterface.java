@@ -14,6 +14,7 @@ public interface ProfessorDAOInterface {
 	 * @throws ProfessorNotTeachingException
 	 */
 	public List<Student> viewEnrolledStudents(String professorId) throws ProfessorNotTeachingException;
+
 	/**
 	 * Method to add grades
 	 * 
@@ -23,6 +24,7 @@ public interface ProfessorDAOInterface {
 	 * @throws StudentNotRegisteredException
 	 * @throws ProfessorNotTeachingException
 	 */
-	public void addGrades(String professorId , String studentId , String grade) throws StudentNotRegisteredException, ProfessorNotTeachingException;
+	public void addGrades(String professorId, String studentId, String grade)
+			throws StudentNotRegisteredException, ProfessorNotTeachingException;
 
 }
