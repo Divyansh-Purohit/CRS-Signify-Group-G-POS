@@ -1,0 +1,122 @@
+<div class="toolbar" role="banner"
+    class="bg-dark text-white d-flex justify-content-center align-items-center gap-3 p-2 fw-medium">
+    <span>WELCOME TO CRS SIGNIFY ADMIN PORTAL</span>
+    <div class="spacer"></div>
+</div>
+<main>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+            <span class="fs-4"> <img width="150" alt="Angular Logo"
+                    src="https://www.signify.com/content/dam/signify/master/crsc/signify-logo-footer.png"
+                    class="img-fluid justify-self-start" />
+            </span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a [routerLink]="['/home']" class="nav-link active" aria-current="page">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#home"></use>
+                    </svg>
+                    Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a [routerLink]="['/approve-student']" class="nav-link text-white" aria-current="page">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#home"></use>
+                    </svg>
+                    Approve Student
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/add-professor']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    Add Professor
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/add-admin']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#table"></use>
+                    </svg>
+                    Add Admin
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/assign-professor']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid"></use>
+                    </svg>
+                    Assign Professor
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/add-course']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Add Course
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/drop-course']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Remove Course
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/view-course-details']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    View Course Details
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/calculate-cpi']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Calculate CPI
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/view-professors']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    View Professors
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/view-admins']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    View Admins
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/Logout']" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Logout
+                </a>
+            </li>
+        </ul>
+        <hr>
+    </div>
+
+    <div class="content d-flex container bg-dark text-white">
+        <router-outlet></router-outlet>
+    </div>
+</main>

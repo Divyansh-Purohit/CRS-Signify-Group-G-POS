@@ -1,0 +1,32 @@
+<div class="container">
+    <h2>Add Course</h2>
+    <form [formGroup]="addCourseForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="courseName">Course Name:</label>
+            <input type="text" class="form-control" formControlName="courseName" placeholder="Enter course name">
+        </div>
+        <div class="form-group">
+            <label for="instructor">Instructor:</label>
+            <input type="text" class="form-control" formControlName="instructor" placeholder="Enter instructor name">
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" formControlName="description" rows="5"
+                placeholder="Enter course description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="prerequisites">Prerequisites:</label>
+            <textarea class="form-control" formControlName="prerequisites" rows="3"
+                placeholder="Enter course prerequisites"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" class="form-control" formControlName="startDate">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" class="form-control" formControlName="endDate">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

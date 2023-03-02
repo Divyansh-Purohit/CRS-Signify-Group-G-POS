@@ -125,4 +125,5 @@ public interface AdminDAOInterface {
 	 */
 	public void generateReportCard(String studentId) throws StudentNotRegisteredException;
 
+
 }

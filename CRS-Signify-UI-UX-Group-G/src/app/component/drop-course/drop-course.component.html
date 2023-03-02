@@ -1,0 +1,29 @@
+<div class="container">
+    <h2 class="text-center">Remove Course</h2>
+    <table class="table text-white">
+        <thead>
+            <tr>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Instructor</th>
+                <th>Number of Students</th>
+                <th>Type</th>
+                <th>Semester</th>
+                <th>Fee</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let course of courses">
+                <td>{{ course.courseCode }}</td>
+                <td>{{ course.name }}</td>
+                <td>{{ course.instructor }}</td>
+                <td>{{ course.numStudents }}</td>
+                <td>{{ course.type }}</td>
+                <td>{{ course.semester }}</td>
+                <td>{{ course.fee }}</td>
+                <td> <button type="submit" class="btn btn-danger" (click)="removeCourse(course)">Remove Course</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -192,7 +192,6 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 				throw new CourseNotFoundException(coursecode);
 			}
 		} catch (SQLException se) {
-
 			throw new CourseNotDeletedException(coursecode);
 		}
 	}
