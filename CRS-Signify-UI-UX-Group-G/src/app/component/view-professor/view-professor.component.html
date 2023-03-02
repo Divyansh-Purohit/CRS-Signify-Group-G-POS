@@ -1,1 +1,20 @@
-<p>view-professor works!</p>
+<table class="table table-bordered text-white">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Course Taught</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let professor of professors">
+            <td>{{ professor.userId }}</td>
+            <td>{{ professor.username }}</td>
+            <td>{{ professor.department }}</td>
+            <td>{{ professor.designation }}</td>
+            <td>{{ professor.courseTaught }}</td>
+        </tr>
+    </tbody>
+</table>

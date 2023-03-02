@@ -48,7 +48,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt.setString(3, newAdmin.getPassword());
 			stmt.setString(4, newAdmin.getAddress());
 			stmt.setDate(5, Date.valueOf(newAdmin.getDoj()));
-			stmt.setInt(6, newAdmin.getRoleid());
+			stmt.setInt(6, 2);
 			stmt.executeUpdate();
 			stmt.close();
 

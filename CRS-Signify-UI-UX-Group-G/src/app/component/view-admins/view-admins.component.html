@@ -1,1 +1,14 @@
-<p>view-admins works!</p>
+<table class="table text-white mx-auto">
+    <thead>
+        <tr>
+            <th>Admin Id</th>
+            <th>Admin Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let admin of admins">
+            <td>{{ admin.userId }}</td>
+            <td>{{ admin.username }}</td>
+        </tr>
+    </tbody>
+</table>

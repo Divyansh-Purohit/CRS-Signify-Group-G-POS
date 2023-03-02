@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Course } from 'src/app/model/course';
 import { CourseService } from 'src/app/service/course.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class AddCourseComponent implements OnInit {
   addCourseForm: FormGroup = new FormGroup({
     one: new FormControl()
   }, { updateOn: 'blur' })
-  
+
+  course: Course = new Course(".", ".", ".", 0, 0, 0, 0);
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
