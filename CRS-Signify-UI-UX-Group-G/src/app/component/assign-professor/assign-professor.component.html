@@ -1,1 +1,20 @@
-<p>assign-professor works!</p>
+<div class="container mt-4">
+    <h2>Assign Course to Professor</h2>
+    <hr>
+    <form (ngSubmit)="assignProfessor()">
+        <div class="form-group">
+            <label for="course">Course:</label>
+            <select class="form-control" id="course" name="course" [(ngModel)]="selectedCourse">
+                <option *ngFor="let course of courses" [ngValue]="course">{{ course.courseCode }} - {{ course.name
+                    }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="professor">Professor:</label>
+            <select class="form-control" id="professor" name="professor" [(ngModel)]="selectedProfessor">
+                <option *ngFor="let professor of professors" [ngValue]="professor">{{ professor.username }}</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Assign</button>
+    </form>
+</div>

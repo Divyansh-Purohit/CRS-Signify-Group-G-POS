@@ -10,6 +10,7 @@ import { DropCourseComponent } from './component/drop-course/drop-course.compone
 import { HomeComponent } from './component/home/home.component';
 import { LogoutComponent } from './component/logout/logout.component';
 import { ViewAdminsComponent } from './component/view-admins/view-admins.component';
+import { ViewCoursesComponent } from './component/view-courses/view-courses.component';
 import { ViewProfessorComponent } from './component/view-professor/view-professor.component';
 
 const routes: Routes = [
@@ -21,7 +22,9 @@ const routes: Routes = [
   { path: 'approve-student', component: ApproveStudentComponent },
   { path: 'assign-professor', component: AssignProfessorComponent },
   { path: 'calculate-cpi', component: CalculateCpiComponent },
-  { path: 'drop-course', component: DropCourseComponent },
+  { path: 'remove-course', component: DropCourseComponent },
+  { path: 'view-courses', component: ViewCoursesComponent },
+  { path: 'calculate-cpi', component: CalculateCpiComponent },
   { path: 'view-admins', component: ViewAdminsComponent },
   { path: 'view-professors', component: ViewProfessorComponent },
   { path: 'logout', component: LogoutComponent },
