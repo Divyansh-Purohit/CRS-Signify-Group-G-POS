@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,9 +30,9 @@ import com.signify.exception.UserAlreadyExistException;
 import com.signify.service.AdminServiceOperation;
 
 /**
- * @author HIMANSHU YADAV
- * The Class AdminRestControllerAPI.
+ * @author HIMANSHU YADAV The Class AdminRestControllerAPI.
  */
+@CrossOrigin
 @RestController
 public class AdminRestControllerAPI {
 
@@ -187,6 +188,12 @@ public class AdminRestControllerAPI {
 		} catch (CourseNotFoundException | CourseNotDeletedException e) {
 			return new ResponseEntity<String>("Course Not Removed", HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@RequestMapping(value = "/listcourses", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Course>> listcourses() {
+		return new ResponseEntity<List<Course>>(adminService.viewCourses(), HttpStatus.OK);
 	}
 
 	/**

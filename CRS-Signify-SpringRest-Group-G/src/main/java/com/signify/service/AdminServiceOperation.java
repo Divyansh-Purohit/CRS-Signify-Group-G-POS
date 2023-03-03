@@ -136,6 +136,16 @@ public class AdminServiceOperation extends UserServiceOperation implements Admin
 	public void removeCourse(String courseCode) throws CourseNotFoundException, CourseNotDeletedException {
 		adi.removeCourse(courseCode);
 	}
+	
+	/**
+	 * adding admin to db
+	 * 
+	 * @throws UserAlreadyExistException
+	 */
+	@Override
+	public List<Course> viewCourses() {
+		return adi.viewCourses();
+	}
 
 	/**
 	 * viewing course details

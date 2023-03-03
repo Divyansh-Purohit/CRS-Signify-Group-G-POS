@@ -35,6 +35,13 @@ public interface AdminInterface {
 	 * @throws CourseNotFoundException
 	 */
 	public void removeCourse(String courseCode) throws CourseNotFoundException, CourseNotDeletedException;
+	
+	/**
+	 * Method to view courses
+	 * 
+	 * @return
+	 */
+	public List<Course> viewCourses();
 
 	/**
 	 * Method to view course details
