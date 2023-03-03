@@ -1,6 +1,7 @@
 <div class="container">
-    <h1>Add Admin</h1>
-    <form #addAdminForm="ngForm" (ngSubmit)="addAdmin()">
+    <h1 class="text-center mb-5">Add Admin</h1>
+    <form #addAdminForm="ngForm" (ngSubmit)="addAdmin()"
+        class="row w-50 mx-auto gap-3 justify-content-center align-items-center">
         <div class="form-group">
             <label for="adminName">Admin Name</label>
             <input type="text" class="form-control" id="adminName" name="adminName" required

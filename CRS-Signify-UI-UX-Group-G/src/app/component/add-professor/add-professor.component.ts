@@ -28,5 +28,7 @@ export class AddProfessorComponent implements OnInit {
           console.log('Professor added successfully');
         }
       );
+
+    this.router.navigate(['/view-professors'])
   }
 }

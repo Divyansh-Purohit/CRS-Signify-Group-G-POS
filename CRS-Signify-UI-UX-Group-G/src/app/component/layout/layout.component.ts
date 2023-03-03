@@ -41,10 +41,10 @@ export class LayoutComponent implements OnInit {
       name: "/view-courses",
       title: "View Courses"
     },
-    {
-      name: "/calculate-cpi",
-      title: "Calculate CPI"
-    },
+    // {
+    //   name: "/calculate-cpi",
+    //   title: "Calculate CPI"
+    // },
     {
       name: "/view-professors",
       title: "View Professors"

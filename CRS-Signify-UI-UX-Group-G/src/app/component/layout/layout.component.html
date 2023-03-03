@@ -1,35 +1,36 @@
-<div class="toolbar" role="banner"
+<!-- <div class="toolbar" role="banner"
     class="bg-dark text-white d-flex justify-content-center align-items-center gap-3 p-2 fw-medium">
     <h5>WELCOME TO CRS SIGNIFY ADMIN PORTAL</h5>
     <div class="spacer"></div>
-</div>
-<main class="d-flex justify-content-center">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4"> <img width="150" alt="Angular Logo"
-                    src="https://www.signify.com/content/dam/signify/master/crsc/signify-logo-footer.png"
-                    class="img-fluid justify-self-start" />
-            </span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item" *ngFor="let route of routes">
-                <a routerLink={{route.name}}
-                    [ngClass]="{'nav-link' : true , 'text-white' : true , 'active': this.selectedTab === route.title}"
-                    aria-current="page" (click)="changeRoute(route)">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#home"></use>
-                    </svg>
-                    {{route.title}}
-                </a>
-            </li>
-        </ul>
-        <hr>
-    </div>
-
+</div> -->
+<main class="layout grid">
+    <section class="d-flex justify-content-center bg-primary">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+                <span class="fs-4"> <img width="150" alt="Angular Logo"
+                        src="https://www.signify.com/content/dam/signify/master/crsc/signify-logo-footer.png"
+                        class="img-fluid justify-self-start" />
+                </span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item" *ngFor="let route of routes">
+                    <a routerLink={{route.name}}
+                        [ngClass]="{'nav-link' : true , 'text-white' : true , 'active': this.selectedTab === route.title}"
+                        aria-current="page" (click)="changeRoute(route)">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#home"></use>
+                        </svg>
+                        {{route.title}}
+                    </a>
+                </li>
+            </ul>
+            <hr>
+        </div>
+    </section>
     <div class="content d-flex container bg-dark justify-content-center align-items-center h-100vh text-white">
         <router-outlet></router-outlet>
     </div>

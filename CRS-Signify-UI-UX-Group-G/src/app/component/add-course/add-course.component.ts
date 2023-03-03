@@ -15,11 +15,11 @@ export class AddCourseComponent implements OnInit {
     one: new FormControl()
   }, { updateOn: 'blur' })
 
-  course: Course = new Course(".", ".", ".", 0, 0, 0, 0);
+  course: Course = new Course('', '', '', 0, 0, 0, 0);
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -33,7 +33,7 @@ export class AddCourseComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  addCourse() {
     // Get the values from the form
     const courseName = this.addCourseForm.controls['courseName'].value;
     const instructor = this.addCourseForm.controls['instructor'].value;
@@ -43,11 +43,11 @@ export class AddCourseComponent implements OnInit {
     const endDate = this.addCourseForm.controls['endDate'].value;
 
     // Call the course service to add the new course
-    this.courseService.addCourse(courseName, instructor, description, prerequisites, startDate, endDate)
-      .subscribe(() => {
-        // Navigate back to the courses page after the course is added
-        this.router.navigate(['/admin/courses']);
+    this.courseService.addCourse(this.course)
+      .subscribe((res) => {
+        console.log(res)
       });
+    this.router.navigate(['/view-courses'])
   }
 
 }

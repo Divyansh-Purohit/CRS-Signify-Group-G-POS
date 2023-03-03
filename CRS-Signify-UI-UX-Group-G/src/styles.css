@@ -5,6 +5,12 @@
     color-scheme: dark;
 }
 
+tr {
+    line-height: 30px;
+    min-height: 25px;
+    height: 25px;
+}
+
 input,
 textarea,
 select {
