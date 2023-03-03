@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormProfessor } from 'src/app/model/professor';
+import { AdminService } from 'src/app/service/admin.service';
 
 @Component({
   selector: 'app-add-professor',
@@ -7,9 +11,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddProfessorComponent implements OnInit {
 
-  constructor() { }
+  professor: FormProfessor = new FormProfessor('', '', '', '', new Date(), 3, '', '', '');
 
-  ngOnInit(): void {
+  constructor(private formBuilder: FormBuilder,
+    private adminService: AdminService,
+    private router: Router) { }
+
+  ngOnInit() {
+
   }
 
+  addProfessor() {
+    this.adminService.addProfessor(this.professor)
+      .subscribe(
+        data => {
+          console.log('Professor added successfully');
+        }
+      );
+  }
 }

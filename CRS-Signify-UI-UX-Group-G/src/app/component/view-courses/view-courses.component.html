@@ -1,5 +1,5 @@
 <div class="container">
-    <h2 class="text-center">Remove Course</h2>
+    <h2 class="text-center">Available Courses</h2>
     <table class="table text-white">
         <thead>
             <tr>
@@ -7,7 +7,6 @@
                 <th>Course Name</th>
                 <th>Instructor Id</th>
                 <th>Fee</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -16,8 +15,6 @@
                 <td>{{ course.name }}</td>
                 <td>{{ course.instructor }}</td>
                 <td>{{ course.fee }}</td>
-                <td> <button type="submit" class="btn btn-danger" (click)="removeCourse(course)">Remove Course</button>
-                </td>
             </tr>
         </tbody>
     </table>

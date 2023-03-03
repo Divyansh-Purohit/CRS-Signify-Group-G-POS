@@ -38,12 +38,13 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_admin = null;
+		String userId = UUID.randomUUID().toString();
 
 		try {
 			conn = DBUtils.getConnection();
 
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
-			stmt.setString(1, newAdmin.getUserId());
+			stmt.setString(1, userId);
 			stmt.setString(2, newAdmin.getUsername());
 			stmt.setString(3, newAdmin.getPassword());
 			stmt.setString(4, newAdmin.getAddress());
@@ -53,7 +54,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt.close();
 
 			stmt_admin = conn.prepareStatement(SQLConstants.REGISTER_ADMIN);
-			stmt_admin.setString(1, newAdmin.getUserId());
+			stmt_admin.setString(1, userId);
 			stmt_admin.setString(2, newAdmin.getUsername());
 			stmt_admin.executeUpdate();
 			stmt_admin.close();
@@ -77,12 +78,13 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt_professor = null;
+		String userId = UUID.randomUUID().toString();
 
 		try {
 			conn = DBUtils.getConnection();
 
 			stmt = conn.prepareStatement(SQLConstants.REGISTER_USER);
-			stmt.setString(1, p.getUserId());
+			stmt.setString(1, userId);
 			stmt.setString(2, p.getUsername());
 			stmt.setString(3, p.getPassword());
 			stmt.setString(4, p.getAddress());
@@ -92,7 +94,7 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 			stmt.close();
 
 			stmt_professor = conn.prepareStatement(SQLConstants.REGISTER_PROFESSOR);
-			stmt_professor.setString(1, p.getUserId());
+			stmt_professor.setString(1, userId);
 			stmt_professor.setString(2, p.getUsername());
 			stmt_professor.setString(3, p.getDepartment());
 			stmt_professor.setString(4, p.getDepartment());
@@ -376,7 +378,6 @@ public class AdminDAOImplementation implements AdminDAOInterface {
 	 */
 
 	public void approveStudentById(String studentid) throws StudentNotFoundForVerificationException {
-		System.out.println(studentid);
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {

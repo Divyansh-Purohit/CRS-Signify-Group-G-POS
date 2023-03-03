@@ -1,1 +1,17 @@
-<p>approve-student works!</p>
+<table class="table text-white">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let student of students">
+            <td>{{ student.studentId }}</td>
+            <td>{{ student.name }}</td>
+            <td><button class="btn btn-primary" (click)="approveStudent(student)">Approve</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
