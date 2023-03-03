@@ -17,16 +17,8 @@ export class CourseService {
     return this.http.get<Course[]>(this.root + "listcourses", { headers: this.headers });
   }
   // Add a new course to the catalog
-  addCourse(courseName: string, instructor: string, description: string, prerequisites: string, startDate: string, endDate: string): Observable<any> {
-    const newCourse = {
-      courseName: courseName,
-      instructor: instructor,
-      description: description,
-      prerequisites: prerequisites,
-      startDate: startDate,
-      endDate: endDate
-    };
-    return this.http.post<any>(`${this.root}/add`, newCourse, { headers: this.headers });
+  addCourse(course: Course): Observable<any> {
+    return this.http.post<any>(`${this.root}` + 'addcourse', course, { headers: this.headers });
   }
 
   // Remove an existing course from the catalog

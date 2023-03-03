@@ -24,7 +24,7 @@ const routes: Routes = [
   { path: 'calculate-cpi', component: CalculateCpiComponent },
   { path: 'remove-course', component: DropCourseComponent },
   { path: 'view-courses', component: ViewCoursesComponent },
-  { path: 'calculate-cpi', component: CalculateCpiComponent },
+  // { path: 'calculate-cpi', component: CalculateCpiComponent },
   { path: 'view-admins', component: ViewAdminsComponent },
   { path: 'view-professors', component: ViewProfessorComponent },
   { path: 'logout', component: LogoutComponent },

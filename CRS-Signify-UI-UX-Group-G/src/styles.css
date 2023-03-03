@@ -4,3 +4,38 @@
 :root {
     color-scheme: dark;
 }
+
+tr {
+    line-height: 30px;
+    min-height: 25px;
+    height: 25px;
+}
+
+input,
+textarea,
+select {
+    background-color: #3b444c !important;
+    color: #FFF !important;
+    border: 0 !important;
+    outline: 0 !important;
+}
+
+::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #FFF;
+}
+
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #121212;
+}
+
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #121212;
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #121212;
+}

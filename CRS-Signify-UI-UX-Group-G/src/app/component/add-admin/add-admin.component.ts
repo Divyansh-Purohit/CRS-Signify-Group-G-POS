@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Admin, FormAdmin } from 'src/app/model/admin';
 import { AdminService } from 'src/app/service/admin.service';
 
@@ -9,7 +10,8 @@ import { AdminService } from 'src/app/service/admin.service';
 })
 export class AddAdminComponent implements OnInit {
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService,
+    private router: Router) { }
   admin: FormAdmin = new FormAdmin("", "", "", "", new Date());
 
   ngOnInit(): void {
@@ -17,5 +19,6 @@ export class AddAdminComponent implements OnInit {
 
   addAdmin() {
     this.adminService.addAdmin(this.admin).subscribe(res => console.log(res));
+    this.router.navigate(['/view-admins']);
   }
 }
